@@ -29,7 +29,7 @@ export default function Home() {
       const response = await safeAuth.signIn();
       console.log(response.eoa);
 
-      // TODO: use this address to check if the user is already registered @apoorvam-web3
+      // TODO: #1 use this address to check if the user is already registered @apoorvam-web3
       // If yes, then show the dashboard page
       // If no, then show the open the modal to create or join a team
       // setIsCreateOrJoinOpen(true);
