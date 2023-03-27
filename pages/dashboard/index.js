@@ -77,13 +77,13 @@ const Dashboard = () => {
                         <div style={{ width: '100px' }}>{member.role}</div>
                         <div className={styles.divider} />
                         <div style={{ width: '200px', display: 'flex', gap: '0 10px' }}>
-                            {!member.isAdmin && !member.isApproved && <div onClick={onApprove}>
+                            {!member.isAdmin && !member.isApproved && <div onClick={onApprove} style={{cursor: 'pointer'}}>
                                 <Icon type='circleCheck' size='md' color='primary'/>
                             </div>}
-                            {(member.role != 'Admin' && !member.isApproved) && <div onClick={onReject}>
+                            {(member.role != 'Admin' && !member.isApproved) && <div onClick={onReject} style={{cursor: 'pointer'}}>
                                 <Icon type='circleCross' size='md' color='error' />
                             </div>}
-                            {(member.role != 'Admin' && member.isApproved) && <div onClick={onRemove}>
+                            {(member.role != 'Admin' && member.isApproved) && <div onClick={onRemove} style={{cursor: 'pointer'}}>
                                 <Icon type='delete' size='md' color='error' />
                             </div>}
                         </div>

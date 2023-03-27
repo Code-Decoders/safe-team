@@ -4,11 +4,12 @@ import { Identicon, Tab } from '../GnosisReact'
 import NavTab from './NavTab'
 
 const Navbar = () => {
+
     return (
         <div className={styles.container}>
             <Identicon address="CodeDecoders" className={styles.avatar}/>
-            <NavTab label={'Manage'} active />
-            <NavTab label={'Wallet'}  />
+            <NavTab label={'Manage'} active={location.pathname == '/dashboard'} href='/dashboard'/>
+            <NavTab label={'Wallet'} active={location.pathname == '/dashboard/wallet'} href='/dashboard/wallet' />
         </div>
     )
 }

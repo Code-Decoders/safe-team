@@ -1,11 +1,12 @@
+import Link from 'next/link'
 import React from 'react'
 import styles from '../../styles/Navbar.module.css'
 
-const NavTab = ({ label, active, onClick }) => {
+const NavTab = ({ label, active, href }) => {
     return (
-        <div className={active ? `${styles.tab} ${styles.active}` : styles.tab} onClick={onClick}>
+        <Link href={href} className={active ? `${styles.tab} ${styles.active}` : styles.tab}>
             {label}
-        </div>
+        </Link>
     )
 }
 
