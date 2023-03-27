@@ -18,16 +18,13 @@ function MyApp({ Component, pageProps }) {
     get()
   }, [])
   if (theme === null) return (<div>Loading...</div>)
+  const getLayout = Component.getLayout ?? ((page) => page)
+
+
   return (
-    // <SafeThemeProvider mode="dark">
-    //   {(safeTheme) => (
-    // <BoardDynamic>
     <ThemeProvider theme={theme}>
-      <Component {...pageProps} />
+      {getLayout(<Component {...pageProps} />)}
     </ThemeProvider>
-    // </BoardDynamic>
-    // )}
-    // </SafeThemeProvider>
   )
 }
 
