@@ -10,6 +10,7 @@ const Navbar = () => {
             <Identicon address="CodeDecoders" className={styles.avatar}/>
             <NavTab label={'Manage'} active={location.pathname == '/dashboard'} href='/dashboard'/>
             <NavTab label={'Wallet'} active={location.pathname == '/dashboard/wallet'} href='/dashboard/wallet' />
+            <NavTab label={'Submit'} active={location.pathname == '/dashboard/submit'} href='/dashboard/submit' />
         </div>
     )
 }
