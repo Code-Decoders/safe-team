@@ -3,10 +3,12 @@ import React, { useEffect } from "react";
 import { Button, Icon } from "../../components/GnosisReact";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import useRampKit from "../../hooks/useRampKit";
+import useRelayKit from "../../hooks/useRelayKit";
 import styles from "../../styles/Wallet.module.css";
 
 const Wallet = () => {
   const { openStripe } = useRampKit();
+  const { startRelay } = useRelayKit();
 
   const [members, setMembers] = React.useState([]);
 
@@ -16,6 +18,10 @@ const Wallet = () => {
 
   const handleAddFunds = async () => {
     await openStripe("0x6e74CFeA3BC9A31656B1A212A7F905572c5B3ee3");
+  };
+
+  const handleSplitFunds = async () => {
+    startRelay();
   };
 
   function getData() {
@@ -107,7 +113,9 @@ const Wallet = () => {
           Add
         </Button>
         <Divider />
-        <Button size="lg">Split</Button>
+        <Button size="lg" onClick={handleSplitFunds}>
+          Split
+        </Button>
         <Divider />
         <Button size="lg">Stream</Button>
         <Divider />
