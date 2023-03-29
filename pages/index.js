@@ -6,6 +6,12 @@ import { CreateTeam } from "../components/modals/CreateTeam";
 import { JoinTeam } from "../components/modals/JoinTeam";
 import { ResultModal } from "../components/modals/ResultModal";
 import useAuthKit from "../hooks/useAuthKit";
+import { Polybase } from "@polybase/client";
+
+const db = new Polybase({
+  defaultNamespace: "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/SafeTeam",
+});
+const collectionReference = db.collection("User");
 
 export default function Home() {
   const [isCreateOrJoinOpen, setIsCreateOrJoinOpen] = useState(false);
@@ -28,6 +34,7 @@ export default function Home() {
     if (safeAuth) {
       const response = await safeAuth.signIn();
       console.log(response.eoa);
+      const eoa = response.eoa;
 
       // TODO: #1 use this address to check if the user is already registered @apoorvam-web3
       // If yes, then show the dashboard page
@@ -35,6 +42,21 @@ export default function Home() {
       // setIsCreateOrJoinOpen(true);
 
       // also, save the address in the database with the email of the user
+
+      let user;
+      try {
+      user = await db.collection("User").record(eoa).get();
+      console.log("User Already exists");
+    } catch (e) {
+      // .create() accepts two params, address and name of user
+      // populate these dynamically with address and name of user
+      user = await db
+        .collection("User")
+        .create([eoa]);
+      console.log("New User created");
+    }
+    console.log("user is ", user);
+    user = user.data;
     }
   };
 
