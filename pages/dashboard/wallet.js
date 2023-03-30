@@ -11,6 +11,8 @@ import styles from "../../styles/Wallet.module.css";
 const Wallet = () => {
   const { openStripe } = useRampKit();
 
+  const [uiLoading, setUILoading] = React.useState(false);
+
   const {
     getPendingTransactions,
     approveTransaction,
@@ -165,22 +167,26 @@ const Wallet = () => {
 
   const getTransactions = async () => {
     if (loading) return;
+    const signer = await getEthSigner();
+    const address = await signer.getAddress();
+    setUser(address);
     // const pdtxs = await getPendingTransactions();
     // setPendingTransactions(pdtxs.results);
     // console.log(pdtxs.results[0]);
   };
 
-  function getData() {
+  async function getData() {
     // TODO: Fetch Transaction from backend and display them in the table
-    setUser("maadhav2001@gmail.com");
-    getTransactions();
+    setUILoading(true);
+    await getTransactions();
+    setUILoading(false);
   }
 
   function onTransactionApprove(hash) {
     approveTransaction(pdtxs.results[0].safeTxHash);
   }
 
-  function onTransactionReject(hash) {}
+  function onTransactionReject(hash) { }
 
   useEffect(() => {
     getData();
@@ -190,7 +196,10 @@ const Wallet = () => {
       <div style={{ flex: 1 }}>
         <div className={styles.walletContainer}>
           <div className={styles.walletHeader}>Total Balance</div>
-          <div className={styles.balance}>$10.00</div>
+
+          <div className={styles.balance}>{
+            // TODO: Fetch balance from backend @Maadhav
+          }$10.00</div>
         </div>
         <div>
           <div className={styles.transaction}>Pending Transaction</div>
@@ -199,7 +208,9 @@ const Wallet = () => {
             <div className={styles.tableDivider} />
             <div style={{ flex: 1 }}>Method</div>
             <div className={styles.tableDivider} />
-            <div style={{ width: "200px" }}>confirmations</div>
+            <div style={{ width: "200px" }}>Confirmations</div>
+            <div className={styles.tableDivider} />
+            <div style={{ width: "100px" }}>Actions</div>
           </div>
           {pendingTransactions.map((tx, index) => (
             <div className={styles.transactionMemberTable} key={index}>
@@ -211,6 +222,21 @@ const Wallet = () => {
                 {tx.confirmations.length}
                 {"/"}
                 {tx.confirmationsRequired}
+              </div>
+              <div className={styles.tableDivider} />
+              <div style={{ width: '100px', display: 'flex', gap: '0 10px' }}>
+                {
+                  tx.confirmations.find((c) => c.owner === '0x4FD3d5db6691c94DBe26302A1b49dE25410bCCb5') ?
+                    <div><Icon type="awaitingConfirmations" size="md" color="pending" /></div> : <div onClick={onTransactionApprove}>
+                      <Icon type='check' size='md' color='primary' />
+                    </div>
+                }
+                {
+                  tx.confirmations.find((c) => c.owner === '0x4FD3d5db6691c94DBe26302A1b49dE25410bCCb5') ? <></> :
+                    <div onClick={onTransactionReject}>
+                      <Icon type='cross' size='md' color='error' />
+                    </div>
+                }
               </div>
             </div>
           ))}
