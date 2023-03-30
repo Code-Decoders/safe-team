@@ -9,9 +9,10 @@ import EthersAdapter from "@safe-global/safe-ethers-lib";
 import useAuthKit from "./useAuthKit";
 import { OperationType } from "@safe-global/safe-core-sdk-types";
 import SafeServiceClient from "@safe-global/safe-service-client";
+import { useEffect, useState } from "react";
 
 const useTransaction = () => {
-  const { safeAuth } = useAuthKit();
+  const { safeAuth, loading } = useAuthKit();
 
   const relayAdapter = new GelatoRelayAdapter(
     process.env.NEXT_PUBLIC_GELATO_RELAY_API_KEY
@@ -29,7 +30,7 @@ const useTransaction = () => {
     isSponsored: true,
   };
 
-  const getPendingTransactions = async () => {
+  const getEthSigner = async () => {
     const eoaresp = await safeAuth.signIn();
 
     const ethProvider = new ethers.providers.Web3Provider(
@@ -37,6 +38,11 @@ const useTransaction = () => {
     );
 
     const signer = ethProvider.getSigner();
+    return signer;
+  };
+
+  const getPendingTransactions = async () => {
+    const signer = await getEthSigner();
 
     const ethAdapter = new EthersAdapter({
       ethers,
@@ -44,22 +50,11 @@ const useTransaction = () => {
     });
     const safeService = new SafeServiceClient({ txServiceUrl, ethAdapter });
 
-    const safeSDK = await Safe.create({
-      ethAdapter,
-      safeAddress,
-    });
-
     return await safeService.getPendingTransactions(safeAddress);
   };
 
   const approveTransaction = async (hash) => {
-    const eoaresp = await safeAuth.signIn();
-
-    const ethProvider = new ethers.providers.Web3Provider(
-      await safeAuth.getProvider()
-    );
-
-    const signer = ethProvider.getSigner();
+    const signer = await getEthSigner();
 
     const ethAdapter = new EthersAdapter({
       ethers,
@@ -121,13 +116,7 @@ const useTransaction = () => {
   };
 
   const rejectTransaction = async (hash) => {
-    const eoaresp = await safeAuth.signIn();
-
-    const ethProvider = new ethers.providers.Web3Provider(
-      await safeAuth.getProvider()
-    );
-
-    const signer = ethProvider.getSigner();
+    const signer = await getEthSigner();
 
     const ethAdapter = new EthersAdapter({
       ethers,
@@ -140,20 +129,14 @@ const useTransaction = () => {
       safeAddress,
     });
 
-    const tx = await safeService.getTransaction(hash)
+    const tx = await safeService.getTransaction(hash);
 
     const safeTx = await safeSDK.createRejectionTransaction(tx.nonce);
     const signature = await safeSDK.signTransactionHash(safeTx.safeTxHash);
-  }
+  };
 
   const proposeTransaction = async (safeTransactionData) => {
-    const eoaresp = await safeAuth.signIn();
-
-    const ethProvider = new ethers.providers.Web3Provider(
-      await safeAuth.getProvider()
-    );
-
-    const signer = ethProvider.getSigner();
+    const signer = await getEthSigner();
 
     const ethAdapter = new EthersAdapter({
       ethers,
@@ -183,7 +166,7 @@ const useTransaction = () => {
       safeAddress,
       safeTransactionData: safeTransaction.data,
       safeTxHash,
-      senderAddress: eoaresp.eoa,
+      senderAddress: await signer.getAddress(),
       senderSignature: signedSafeTx.data,
       origin: "SafeTeam",
     });
@@ -192,7 +175,7 @@ const useTransaction = () => {
       safeAddress,
       safeTransactionData: safeTransaction.data,
       safeTxHash,
-      senderAddress: eoaresp.eoa,
+      senderAddress: await signer.getAddress(),
       senderSignature: signedSafeTx.data,
       origin: "SafeTeam",
     });
@@ -230,6 +213,8 @@ const useTransaction = () => {
     getPendingTransactions,
     approveTransaction,
     rejectTransaction,
+    getEthSigner,
+    loading,
   };
 };
 
