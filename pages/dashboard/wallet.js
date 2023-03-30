@@ -3,12 +3,14 @@ import React, { useEffect } from "react";
 import { Button, Icon } from "../../components/GnosisReact";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import useRampKit from "../../hooks/useRampKit";
-import useRelayKit from "../../hooks/useRelayKit";
+import useTransaction from "../../hooks/useTransaction";
 import styles from "../../styles/Wallet.module.css";
 
 const Wallet = () => {
   const { openStripe } = useRampKit();
-  const { startRelay } = useRelayKit();
+
+  const { getPendingTransactions, approveTransaction, proposeTransaction } =
+    useTransaction();
 
   const [members, setMembers] = React.useState([]);
 
@@ -21,7 +23,25 @@ const Wallet = () => {
   };
 
   const handleSplitFunds = async () => {
-    startRelay();
+    const safeTransactionData = [
+      {
+        to: "0x30F99aa3239E795BfE8037F42be9feA16071eCa9",
+        data: "0x", // leave blank for ETH transfers
+        value: withdrawAmount,
+        operation: OperationType.Call,
+      },
+      {
+        to: "0x30F99aa3239E795BfE8037F42be9feA16071eCa9",
+        data: "0x", // leave blank for ETH transfers
+        value: withdrawAmount,
+        operation: OperationType.Call,
+      },
+    ];
+    await proposeTransaction(safeTransactionData);
+    // execTransaction();
+    // const pdtxs = await getPendingTransactions();
+    // console.log(pdtxs.results[0]);
+    // approveTransaction(pdtxs.results[0].safeTxHash);
   };
 
   function getData() {
@@ -43,9 +63,11 @@ const Wallet = () => {
     setUser("maadhav2001@gmail.com");
   }
 
-  function onTransactionApprove() {}
+  function onTransactionApprove(hash) {
+    approveTransaction(pdtxs.results[0].safeTxHash);
+  }
 
-  function onTransactionReject() {}
+  function onTransactionReject(hash) {}
 
   useEffect(() => {
     getData();
