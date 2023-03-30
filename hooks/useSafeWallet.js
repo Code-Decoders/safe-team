@@ -37,8 +37,8 @@ const useSafeWallet = () => {
     const safeAddress = safeSdkOwner.getAddress();
 
     console.log("Your Safe has been deployed:");
-    console.log(`https://goerli.etherscan.io/address/${safeAddress}`);
-    console.log(`https://app.safe.global/gor:${safeAddress}`);
+    console.log(`https://goerli.basescan.org/address/${safeAddress}`);
+    console.log(`https://app.safe.global/base-gor:${safeAddress}`);
   };
 
   return { create };

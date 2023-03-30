@@ -18,11 +18,9 @@ const useTransaction = () => {
     process.env.NEXT_PUBLIC_GELATO_RELAY_API_KEY
   );
 
-  const withdrawAmount = ethers.utils.parseUnits("0.0005", "ether").toString();
-
   const safeAddress = "0xCB8eC99b9647c23C0F52D30f320bBf60a33D08B6";
-  const chainId = 5;
-  const txServiceUrl = "https://safe-transaction-goerli.safe.global";
+  const chainId = "0x14A33";
+  const txServiceUrl = "https://safe-transaction-base-testnet.safe.global/";
   const gasLimit = "3000000";
 
   const options = {
