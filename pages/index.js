@@ -7,11 +7,11 @@ import { JoinTeam } from "../components/modals/JoinTeam";
 import { ResultModal } from "../components/modals/ResultModal";
 import useAuthKit from "../hooks/useAuthKit";
 import { Polybase } from "@polybase/client";
+import { useSafeWallet } from "../hooks/useSafeWallet";
 
 const db = new Polybase({
   defaultNamespace: "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/SafeTeam",
 });
-const collectionReference = db.collection("User");
 
 export default function Home() {
   const [isCreateOrJoinOpen, setIsCreateOrJoinOpen] = useState(false);
@@ -47,6 +47,8 @@ export default function Home() {
       try {
       user = await db.collection("User").record(eoa).get();
       console.log("User Already exists");
+      setIsCreateOrJoinOpen(true);
+
     } catch (e) {
       // .create() accepts two params, address and name of user
       // populate these dynamically with address and name of user
@@ -54,11 +56,28 @@ export default function Home() {
         .collection("User")
         .create([eoa]);
       console.log("New User created");
+      setIsCreateOrJoinOpen(true);
     }
     console.log("user is ", user);
     user = user.data;
     }
   };
+
+  // async function addTeam() {
+  //   console.log("New Team created1");
+  //   setTeamName(teamName);
+  //   console.log("team", teamName)
+  //   setOnCreate(true); 
+  //   let teamEntry;
+  //   let randomid = Math.random().toString(36).substring(7);
+  //   teamEntry = await db
+  //   .collection("Team")
+  //   .create([randomid, teamName]);
+  //   console.log("New Team created2");
+  //   console.log(teamEntry)
+  //   setIsCreateOrJoinOpen(true);
+
+  // }
 
   return (
     <div className={styles.app}>
@@ -87,8 +106,7 @@ export default function Home() {
           onClose={() => setIsCreateClicked(false)}
           onSubmit={(team) => {
             setTeamName(team);
-            setOnCreate(true);
-          }}
+            setOnCreate(true);}}
         />
       )}
 

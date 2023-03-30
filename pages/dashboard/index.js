@@ -45,14 +45,14 @@ const Dashboard = () => {
     useEffect(() => {
         getData();
     }, []);
-    return (
+    return ( //TODO - add SAFE wallet. cant add new team members after this. 
         <div className={styles.container}>
             <div className={styles.profile}>
                 <div>
                     <h1 style={{ margin: '0px 0px 20px 0px' }}>Hi, <span style={{ color: '#008c73' }}>{teamName}</span></h1>
                     <h3>Members: {members.length}</h3>
                 </div>
-                <Button size='md' variant='contained'>Submit</Button>
+                <Button size='md' variant='contained'>Submit</Button> 
             </div>
             <div className={styles.memberTableHeader}>
                 <div style={{ width: '100px' }}>ID</div>

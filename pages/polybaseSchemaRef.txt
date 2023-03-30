@@ -1,22 +1,25 @@
-// This is an example collection definition.
-// You should edit it for your use case.
+@public
+collection Details {
 
-// The language (Polylang) is similar to JavaScript,
-// but semi-colons are mandatory.
+  id: string;
+  status: string;
+  role: string;
+  //unapproved(U), approved(A), disapproved(D)
+  //member(M), leader(L)
 
-// The `collection` keyword defines a named collection.
-// Collection properties define the "columns" in a record.
-
-// @`public` means that the collection is public, anyone can view and read
-// the records in the collection. You can still implement rules on who can 
-// edit the data by defining functions on the collection and checking the public key.
+  constructor (_id:string, _status:string, _role:string){
+    this.id = _id;
+    this.status = _status;
+    this.role = _role;
+  }
+}
 
 @public
 collection User {
   // `id` is unique and required on all collections
   id: string;
   eoa: string;
-  teams: string[]; 
+  teams: string[];
 
   // `constructor` is called when a new record is
   // created, make sure to assign a value to `this.id`
@@ -33,25 +36,31 @@ collection User {
   }
 }
 
+@public
 collection Team {
   // `id` is unique and required on all collections
   id: string;
   safew: string;
   name: string;
-  members: string[];
+  members: Details[];
 
   // `constructor` is called when a new record is
   // created, make sure to assign a value to `this.id`
-  constructor (_safew: string, _name: string) {
+  constructor (_id: string, _name: string) {
     // `this.id` must be assigned in the constructor
     // `this.id` must be unique in collection
-    this.id = _safew;
-    this.safew = _safew;
+    this.id = _id;
+    this.safew = _id;
     this.name = _name;
-    this.members = [];
+    this.members = []; //a 2d array - [[id/eoa, status - approved/disapproved, role - admin/member], [], [], ...] - fixed. 
   }
 
-  function addMembers (_add: string) {
-    this.members.push(_add);
+  function addMember (_add: string, _status:string, _role:string) {
+    //this.members.push([_add, _status, _role]);
+    this.members.push(Details([_add, _status, _role]));
+  }
+
+  function addSafeW (_safew: string) {
+    this.safew = _safew;
   }
 }
