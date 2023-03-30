@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 
 const useAuthKit = () => {
   const [safeAuth, setSafeAuth] = useState();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -23,7 +23,6 @@ const useAuthKit = () => {
           theme: "dark",
         },
       });
-
       setSafeAuth(safeAuth);
       setLoading(false);
     })();

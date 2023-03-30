@@ -1,16 +1,125 @@
 import { Divider } from "@mui/material";
+import { OperationType } from "@safe-global/safe-core-sdk-types";
 import React, { useEffect } from "react";
 import { Button, Icon } from "../../components/GnosisReact";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import useRampKit from "../../hooks/useRampKit";
-import useRelayKit from "../../hooks/useRelayKit";
+import useTransaction from "../../hooks/useTransaction";
+import generateERC20Tx from "../../lib/erc20";
 import styles from "../../styles/Wallet.module.css";
 
 const Wallet = () => {
   const { openStripe } = useRampKit();
-  const { startRelay } = useRelayKit();
+
+  const {
+    getPendingTransactions,
+    approveTransaction,
+    proposeTransaction,
+    loading,
+    getEthSigner,
+  } = useTransaction();
 
   const [members, setMembers] = React.useState([]);
+
+  const [pendingTransactions, setPendingTransactions] = React.useState([
+    {
+      safe: "0xCB8eC99b9647c23C0F52D30f320bBf60a33D08B6",
+      to: "0xA238CBeb142c10Ef7Ad8442C6D1f9E89e07e7761",
+      value: "0",
+      data: "0x8d80ff0a0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000013200466595626333c55fa7d7ad6265d46ba5fdbbdd9900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000044a9059cbb000000000000000000000000f96b7ffd86d10106e986ddafaefb02c6ef4424dd0000000000000000000000000000000000000000000000000de0b6b3a764000000466595626333c55fa7d7ad6265d46ba5fdbbdd9900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000044a9059cbb0000000000000000000000004fd3d5db6691c94dbe26302a1b49de25410bccb50000000000000000000000000000000000000000000000000de0b6b3a76400000000000000000000000000000000",
+      operation: 1,
+      gasToken: "0x0000000000000000000000000000000000000000",
+      safeTxGas: 0,
+      baseGas: 0,
+      gasPrice: "0",
+      refundReceiver: "0x0000000000000000000000000000000000000000",
+      nonce: 10,
+      executionDate: null,
+      submissionDate: "2023-03-30T03:20:10.754449Z",
+      modified: "2023-03-30T03:20:11.549010Z",
+      blockNumber: null,
+      transactionHash: null,
+      safeTxHash:
+        "0x034024d60969f20f5f6e8ddf46f960206187a60ff1310514c51863ac28ad62de",
+      executor: null,
+      isExecuted: false,
+      isSuccessful: null,
+      ethGasPrice: null,
+      maxFeePerGas: null,
+      maxPriorityFeePerGas: null,
+      gasUsed: null,
+      fee: null,
+      origin: "SafeTeam",
+      dataDecoded: {
+        method: "multiSend",
+        parameters: [
+          {
+            name: "transactions",
+            type: "bytes",
+            value:
+              "0x00466595626333c55fa7d7ad6265d46ba5fdbbdd9900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000044a9059cbb000000000000000000000000f96b7ffd86d10106e986ddafaefb02c6ef4424dd0000000000000000000000000000000000000000000000000de0b6b3a764000000466595626333c55fa7d7ad6265d46ba5fdbbdd9900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000044a9059cbb0000000000000000000000004fd3d5db6691c94dbe26302a1b49de25410bccb50000000000000000000000000000000000000000000000000de0b6b3a7640000",
+            valueDecoded: [
+              {
+                operation: 0,
+                to: "0x466595626333c55fa7d7Ad6265D46bA5fDbBDd99",
+                value: "0",
+                data: "0xa9059cbb000000000000000000000000f96b7ffd86d10106e986ddafaefb02c6ef4424dd0000000000000000000000000000000000000000000000000de0b6b3a7640000",
+                dataDecoded: {
+                  method: "transfer",
+                  parameters: [
+                    {
+                      name: "to",
+                      type: "address",
+                      value: "0xF96b7fFd86d10106e986DdAfaefb02c6ef4424dd",
+                    },
+                    {
+                      name: "value",
+                      type: "uint256",
+                      value: "1000000000000000000",
+                    },
+                  ],
+                },
+              },
+              {
+                operation: 0,
+                to: "0x466595626333c55fa7d7Ad6265D46bA5fDbBDd99",
+                value: "0",
+                data: "0xa9059cbb0000000000000000000000004fd3d5db6691c94dbe26302a1b49de25410bccb50000000000000000000000000000000000000000000000000de0b6b3a7640000",
+                dataDecoded: {
+                  method: "transfer",
+                  parameters: [
+                    {
+                      name: "to",
+                      type: "address",
+                      value: "0x4FD3d5db6691c94DBe26302A1b49dE25410bCCb5",
+                    },
+                    {
+                      name: "value",
+                      type: "uint256",
+                      value: "1000000000000000000",
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        ],
+      },
+      confirmationsRequired: 2,
+      confirmations: [
+        {
+          owner: "0x4FD3d5db6691c94DBe26302A1b49dE25410bCCb5",
+          submissionDate: "2023-03-30T03:20:11.549010Z",
+          transactionHash: null,
+          signature:
+            "0x485aa10d099f4e3708aedaaeebc55289bfbb1ae19bf8e6f70975e310dae8c0870ef7a820a0b4b854e12d14b3e846c8cfec7528595cf4d952fa840f7324a1cd5c1f",
+          signatureType: "ETH_SIGN",
+        },
+      ],
+      trusted: true,
+      signatures: null,
+    },
+  ]);
 
   const [user, setUser] = React.useState("");
 
@@ -21,35 +130,61 @@ const Wallet = () => {
   };
 
   const handleSplitFunds = async () => {
-    startRelay();
+    const signer = await getEthSigner();
+    const data1 = await generateERC20Tx(
+      "0xF96b7fFd86d10106e986DdAfaefb02c6ef4424dd",
+      "1",
+      signer
+    );
+    const data2 = await generateERC20Tx(
+      "0x4FD3d5db6691c94DBe26302A1b49dE25410bCCb5",
+      "1",
+      signer
+    );
+
+    const safeTransactionData = [
+      {
+        to: data1.to,
+        data: data1.data,
+        value: "0",
+        operation: OperationType.Call,
+      },
+      {
+        to: data2.to,
+        data: data2.data,
+        value: "0",
+        operation: OperationType.Call,
+      },
+    ];
+    // await proposeTransaction(safeTransactionData);
+
+    // const pdtxs = await getPendingTransactions();
+    // console.log(pdtxs.results[0]);
+    // approveTransaction(pdtxs.results[0].safeTxHash);
+  };
+
+  const getTransactions = async () => {
+    if (loading) return;
+    // const pdtxs = await getPendingTransactions();
+    // setPendingTransactions(pdtxs.results);
+    // console.log(pdtxs.results[0]);
   };
 
   function getData() {
     // TODO: Fetch Transaction from backend and display them in the table
-    setMembers([
-      {
-        email: "jainkunal976@gmail.com",
-        status: "Approved",
-      },
-      {
-        email: "maadhav2001@gmail.com",
-        status: "Pending",
-      },
-      {
-        email: "abc@gmail.com",
-        status: "Rejected",
-      },
-    ]);
     setUser("maadhav2001@gmail.com");
+    getTransactions();
   }
 
-  function onTransactionApprove() {}
+  function onTransactionApprove(hash) {
+    approveTransaction(pdtxs.results[0].safeTxHash);
+  }
 
-  function onTransactionReject() {}
+  function onTransactionReject(hash) {}
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [loading]);
   return (
     <div className={styles.container}>
       <div style={{ flex: 1 }}>
@@ -60,48 +195,22 @@ const Wallet = () => {
         <div>
           <div className={styles.transaction}>Pending Transaction</div>
           <div className={styles.transactionHeader}>
-            <div style={{ width: "100px" }}>ID</div>
+            <div style={{ width: "100px" }}>Nonce</div>
             <div className={styles.tableDivider} />
-            <div style={{ flex: 1 }}>Email</div>
+            <div style={{ flex: 1 }}>Method</div>
             <div className={styles.tableDivider} />
-            <div style={{ width: "100px" }}>Status</div>
+            <div style={{ width: "200px" }}>confirmations</div>
           </div>
-          {members.map((member, index) => (
+          {pendingTransactions.map((tx, index) => (
             <div className={styles.transactionMemberTable} key={index}>
-              <div style={{ width: "100px" }}>{index + 1}</div>
+              <div style={{ width: "100px" }}>{tx.nonce}</div>
               <div className={styles.tableDivider} />
-              <div style={{ flex: 1 }}>{member.email}</div>
+              <div style={{ flex: 1 }}>{tx.dataDecoded.method}</div>
               <div className={styles.tableDivider} />
-              <div style={{ width: "100px" }}>
-                {member.status == "Approved" && (
-                  <Icon type="circleCheck" size="md" color="primary" />
-                )}
-                {member.status == "Pending" &&
-                  (member.email != user ? (
-                    <Icon
-                      type="awaitingConfirmations"
-                      size="md"
-                      color="pending"
-                    />
-                  ) : (
-                    <div style={{ display: "flex", gap: "0 10px" }}>
-                      <div
-                        onClick={onTransactionApprove}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <Icon type="check" size="md" color="primary" />
-                      </div>
-                      <div
-                        onClick={onTransactionReject}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <Icon type="cross" size="md" color="pending" />
-                      </div>
-                    </div>
-                  ))}
-                {member.status == "Rejected" && (
-                  <Icon type="circleCross" size="md" color="error" />
-                )}
+              <div style={{ width: "200px" }}>
+                {tx.confirmations.length}
+                {"/"}
+                {tx.confirmationsRequired}
               </div>
             </div>
           ))}
