@@ -1,34 +1,115 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started
+# SafeTeam
 
-First, run the development server:
+![Logo](https://i.imgur.com/TSh8KKs.png)
+> SafeTeam is a secure and user-friendly platform for managing cryptocurrency wallets.
+> It eliminates the need for trust by using a multi-sig wallet and account abstraction.
+> SafeTeam leverages the power of the Safe Core SDK to provide a solution for the problem of lost private keys and unsecure EOA wallets.
+> By using SafeTeam, you can secure your cryptocurrency funds and have peace of mind knowing that your private keys are safe and accessible.
+
+[Dora Hacks BUIDL Submission](https://dorahacks.io/buidl/4765)
+ 
+## Features
+
+- Multi-signature wallet functionality for enhanced security.
+- User-friendly interface for easy use.
+- Gas-Less Transactions using Gelato Relayer via Relay Kit.
+- Sign In using socials using Web3Auth via Auth Kit.
+- Add funds using your Credit-Card using the Stripe SDK via On-Ramp kit.
+- Integration with the Safe Core SDK for improved account abstraction.
+- Support for various cryptocurrencies, including Ether and ERC-20 tokens.
+- Stream money evenly between all memebers using SuperFluid.
+- Every team member needs to approve the transaction in order for it to execute.
+- Transaction history and notification system for easy tracking of funds.
+- Gnosis Multi Send transactions implemented. 
+
+## Demo
+
+Live Website (https://safeteam.netlify.app/)
+
+Youtube Video Demo
+
+[![Youtube Video](https://img.youtube.com/vi/qZBrCzvP2Xg/sddefault.jpg)](https://youtu.be/qZBrCzvP2Xg)
+
+
+
+## Tech Stack
+
+**Frontend:** NEXT.JS, ethers.js, Web3Auth
+
+**Backend:** PolyBase, Safe Core SDK, Gelato, Base Testnet, Stripe SDK (onramp kit)
+## Roadmap
+
+- [x]  Social Logins
+- [x]  Gasless Transactions
+- [x]  Add funds using Credit Card
+- [x]  Split Funds evenly on one click
+- [ ]  Stream Funds to all team members
+- [ ]  Option to stake funds
+- [ ]  Gasless Creation of Safes
+- [ ]  Multi Chain support
+- [ ]  Pitch the product to various Hackathon Platforms
+
+## Run Locally
+
+Clone the project
 
 ```bash
-npm run dev
-# or
-yarn dev
+  git clone https://github.com/Code-Decoders/safeteam
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Go to the project directory
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+```bash
+  cd sasfeteam
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+Install dependencies
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+```bash
+  yarn install
+```
 
-## Learn More
+Start the server
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+  yarn dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Contributing
 
-## Deploy on Vercel
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Don't forget to give the project a star! Thanks again!
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1. Fork the Project
+2. Create your Feature Branch
+   ```sh
+   git checkout -b feature/AmazingFeature
+   ```
+3. Commit your Changes 
+    ```sh
+    git commit -m 'Add some AmazingFeature'
+    ```
+4. Push to the Branch 
+   ```sh
+    git push origin feature/AmazingFeature
+    ```
+6. Open a Pull Request
+
+## License
+
+Distributed under the MIT License. See `LICENSE.md` for more information.
+    
+## Feedback & Contact
+
+If you have any feedback or contact, please reach out to us at info@codedecoders.io
+
+
+## Authors
+
+- [@Maadhav](https://www.github.com/Maadhav)
+- [@kunal528](https://www.github.com/kunal528)
+- [@apoorvam-web3](https://www.github.com/apoorvam-web3)
