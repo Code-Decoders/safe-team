@@ -205,7 +205,7 @@ const Wallet = () => {
             <div className={styles.transactionMemberTable} key={index}>
               <div style={{ width: "100px" }}>{tx.nonce}</div>
               <div className={styles.tableDivider} />
-              <div style={{ flex: 1 }}>{tx.dataDecoded.method}{tx.dataDecoded.parameters.toString()}</div>
+              <div style={{ flex: 1 }}>{tx.dataDecoded.method}</div>
               <div className={styles.tableDivider} />
               <div style={{ width: "200px" }}>
                 {tx.confirmations.length}
