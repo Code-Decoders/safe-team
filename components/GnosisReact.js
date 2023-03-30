@@ -21,4 +21,8 @@ export const Icon = dynamic(() => import('@gnosis.pm/safe-react-components').the
     ssr: false,
 })
 
+export const EthHashInfo = dynamic(() => import('@gnosis.pm/safe-react-components').then(val => val.EthHashInfo), {
+    ssr: false,
+})
+
 
