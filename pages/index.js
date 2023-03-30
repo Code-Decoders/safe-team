@@ -45,6 +45,7 @@ export default function Home() {
 
       let user;
       try {
+      console.log("Hello1");
       user = await db.collection("User").record(eoa).get();
       console.log("User Already exists");
       setIsCreateOrJoinOpen(true);
@@ -52,6 +53,7 @@ export default function Home() {
     } catch (e) {
       // .create() accepts two params, address and name of user
       // populate these dynamically with address and name of user
+      console.log("Hello2");
       user = await db
         .collection("User")
         .create([eoa]);
@@ -141,7 +143,7 @@ export default function Home() {
           }
           buttonText={"Go to Dashboard"}
           onClick={() => {
-            var url = "/dashboard";
+            var url = "/dashboard/"+{teamName};
             var a = document.createElement("a");
             a.href = url;
             a.click();
