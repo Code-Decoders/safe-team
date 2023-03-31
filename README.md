@@ -29,7 +29,7 @@ Live Website (https://safeteam.netlify.app/)
 
 Youtube Video Demo
 
-[![Youtube Video](https://img.youtube.com/vi/qZBrCzvP2Xg/sddefault.jpg)](https://youtu.be/qZBrCzvP2Xg)
+[![Youtube Video](https://img.youtube.com/vi/82I3SUHx2EE/sddefault.jpg)](https://youtu.be/82I3SUHx2EE)
 
 
 
@@ -55,13 +55,13 @@ Youtube Video Demo
 Clone the project
 
 ```bash
-  git clone https://github.com/Code-Decoders/safeteam
+  git clone https://github.com/Code-Decoders/safe-team
 ```
 
 Go to the project directory
 
 ```bash
-  cd sasfeteam
+  cd sasfe-team
 ```
 
 Install dependencies
