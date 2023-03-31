@@ -12,4 +12,17 @@ export const TextFieldInput = dynamic(() => import('@gnosis.pm/safe-react-compon
     ssr: false,
 })
 
+export const Identicon = dynamic(() => import('@gnosis.pm/safe-react-components').then(val => val.Identicon), {
+    ssr: false,
+})
+
+
+export const Icon = dynamic(() => import('@gnosis.pm/safe-react-components').then(val => val.Icon), {
+    ssr: false,
+})
+
+export const EthHashInfo = dynamic(() => import('@gnosis.pm/safe-react-components').then(val => val.EthHashInfo), {
+    ssr: false,
+})
+
 
