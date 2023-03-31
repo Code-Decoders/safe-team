@@ -7,8 +7,8 @@ import useAuthKit from "../../hooks/useAuthKit";
 
 
 const db = new Polybase({
-  defaultNamespace: "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/SafeTeam",
-});
+    defaultNamespace: "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/SafeTeamDB",
+  });
 
 const Dashboard = () => {
     const { safeAuth } = useAuthKit();
