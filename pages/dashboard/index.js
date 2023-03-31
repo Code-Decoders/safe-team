@@ -7,7 +7,8 @@ import useAuthKit from "../../hooks/useAuthKit";
 import useSafeWallet from "../../hooks/useSafeWallet";
 
 const db = new Polybase({
-  defaultNamespace: "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/Safe4",
+  defaultNamespace:
+    "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/Safe4",
 });
 
 const Dashboard = () => {
@@ -73,12 +74,12 @@ const Dashboard = () => {
   }
 
   const handleSubmit = async () => {
-    const provider = await safeAuth.getProvider();
+    // const provider = await safeAuth.getProvider();
     const teamMembers = members
       .filter((m) => m.status == "Approved")
       .map((m) => m.id);
     console.log(teamMembers);
-    const safeAddress = await create(provider, teamMembers);
+    const safeAddress = await create(safeAuth, teamMembers);
 
     await db
       .collection("Team")

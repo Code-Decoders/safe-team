@@ -1,6 +1,5 @@
-import Web3 from "web3";
-import Web3Adapter from "@safe-global/safe-web3-lib";
-import SafeServiceClient from "@safe-global/safe-service-client";
+import { ethers } from "ethers";
+import EthersAdapter from "@safe-global/safe-ethers-lib";
 import { SafeFactory } from "@safe-global/safe-core-sdk";
 
 /*
@@ -13,15 +12,18 @@ import { SafeFactory } from "@safe-global/safe-core-sdk";
 */
 
 const useSafeWallet = () => {
-  const create = async (provider, owners) => {
-    const web3 = new Web3(provider);
+  const create = async (safeAuth, owners) => {
+    await safeAuth.signIn();
 
-    const address = (await web3.eth.getAccounts())[0];
-    console.log("address", address);
+    const ethProvider = new ethers.providers.Web3Provider(
+      await safeAuth.getProvider()
+    );
 
-    const ethAdapter = new Web3Adapter({
-      web3,
-      signerAddress: address,
+    const signer = ethProvider.getSigner();
+
+    const ethAdapter = new EthersAdapter({
+      ethers,
+      signerOrProvider: signer,
     });
     console.log("ethAdapter", ethAdapter);
 
@@ -34,7 +36,6 @@ const useSafeWallet = () => {
       owners: owners,
       threshold: owners.length,
     };
-    
 
     const safeSdkOwner = await safeFactory.deploySafe({ safeAccountConfig });
     console.log("owner", safeSdkOwner);
