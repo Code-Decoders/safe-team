@@ -35,14 +35,6 @@ export default function Home() {
       const response = await safeAuth.signIn();
       console.log(response.eoa);
       const eoa = response.eoa;
-
-      // TODO: #1 use this address to check if the user is already registered @apoorvam-web3
-      // If yes, then show the dashboard page
-      // If no, then show the open the modal to create or join a team
-      // setIsCreateOrJoinOpen(true);
-
-      // also, save the address in the database with the email of the user
-
       let user;
       try {
       console.log("Hello1");
