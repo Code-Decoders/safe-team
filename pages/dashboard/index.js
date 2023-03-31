@@ -4,6 +4,7 @@ import DashboardLayout from "../../components/layout/DashboardLayout";
 import styles from "../../styles/Dashboard.module.css";
 import { Polybase } from "@polybase/client";
 import useAuthKit from "../../hooks/useAuthKit";
+import useSafeWallet from "../../hooks/useSafeWallet";
 
 const db = new Polybase({
   defaultNamespace:
@@ -12,12 +13,13 @@ const db = new Polybase({
 
 const Dashboard = () => {
   const { safeAuth } = useAuthKit();
+  const { create } = useSafeWallet();
   const [user, setUser] = useState();
 
   const [teamName, setTeamName] = React.useState("");
   const [members, setMembers] = React.useState([]);
   const [teamCode, setTeamCode] = React.useState("");
-
+  const [isWalletCreated, setIsWalletCreated] = React.useState(false);
   async function getData() {
     if (safeAuth) {
       const response = await safeAuth.signIn();
@@ -31,6 +33,7 @@ const Dashboard = () => {
       console.log("Team name", teamName);
       let temp2 = await db.collection("Team").record(teamName).get();
       setTeamCode(temp2.data.tcode);
+      setIsWalletCreated(temp2.data.safew != teamName);
       let ppl = temp2.data.members;
       let i = 0;
       let len = ppl.length;
@@ -70,6 +73,21 @@ const Dashboard = () => {
       .then((_) => getData());
   }
 
+  const handleSubmit = async () => {
+    const provider = await safeAuth.getProvider();
+    const teamMembers = members
+      .filter((m) => m.status == "Approved")
+      .map((m) => m.id);
+    console.log(teamMembers);
+    const safeAddress = await create(provider, teamMembers);
+
+    await db
+      .collection("Team")
+      .record(teamName)
+      .call("addSafeW", [safeAddress]);
+    getData();
+  };
+
   useEffect(() => {
     getData();
   }, [safeAuth]);
@@ -86,9 +104,11 @@ const Dashboard = () => {
           </h2>
           <h3>Members: {members.length}</h3>
         </div>
-        <Button size="md" variant="contained">
-          Submit
-        </Button>
+        {!isWalletCreated && (
+          <Button size="md" variant="contained" onClick={handleSubmit}>
+            Submit
+          </Button>
+        )}
       </div>
       <div className={styles.memberTableHeader}>
         <div style={{ width: "100px" }}>#</div>
@@ -113,18 +133,27 @@ const Dashboard = () => {
           <div className={styles.divider} />
           {members.find((m) => m.role == "Leader").id == user ? (
             <div style={{ width: "200px", display: "flex", gap: "0 10px" }}>
-              {!(member.role == "Leader") && !member.status=="Unapproved" && (
-                <div onClick={()=>onApprove(member.id)} style={{ cursor: "pointer" }}>
+              {member.role != "Leader" && member.status == "Unapproved" && (
+                <div
+                  onClick={() => onApprove(member.id)}
+                  style={{ cursor: "pointer" }}
+                >
                   <Icon type="circleCheck" size="md" color="primary" />
                 </div>
               )}
-              {member.role != "Leader" && !member.status=="Unapproved" && (
-                <div onClick={()=>onReject(member.id)} style={{ cursor: "pointer" }}>
+              {member.role != "Leader" && member.status == "Unapproved" && (
+                <div
+                  onClick={() => onReject(member.id)}
+                  style={{ cursor: "pointer" }}
+                >
                   <Icon type="circleCross" size="md" color="error" />
                 </div>
               )}
-              {member.role != "Leader" && member.status=="Unapproved" && (
-                <div onClick={()=>onRemove(member.id)} style={{ cursor: "pointer" }}>
+              {member.role != "Leader" && member.status == "Approved" && (
+                <div
+                  onClick={() => onRemove(member.id)}
+                  style={{ cursor: "pointer" }}
+                >
                   <Icon type="delete" size="md" color="error" />
                 </div>
               )}

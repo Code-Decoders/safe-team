@@ -7,6 +7,12 @@ import useRampKit from "../../hooks/useRampKit";
 import useTransaction from "../../hooks/useTransaction";
 import { generateERC20Tx, getBalance } from "../../lib/erc20";
 import styles from "../../styles/Wallet.module.css";
+import { Polybase } from "@polybase/client";
+
+const db = new Polybase({
+  defaultNamespace:
+    "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/Safe3",
+});
 
 const Wallet = () => {
   const { openStripe } = useRampKit();
@@ -32,55 +38,66 @@ const Wallet = () => {
 
   const stripeRootRef = React.useRef(null);
 
+  const [safeAddress, setSafeAddress] = React.useState("");
+
   const handleAddFunds = async () => {
-    await openStripe("0x6e74CFeA3BC9A31656B1A212A7F905572c5B3ee3");
+    await openStripe(safeAddress);
   };
 
   const handleSplitFunds = async () => {
     const signer = await getEthSigner();
-    const data1 = await generateERC20Tx(
-      "0xF96b7fFd86d10106e986DdAfaefb02c6ef4424dd",
-      "1",
-      signer
-    );
-    const data2 = await generateERC20Tx(
-      "0x4FD3d5db6691c94DBe26302A1b49dE25410bCCb5",
-      "1",
-      signer
-    );
-
-    const safeTransactionData = [
-      {
-        to: data1.to,
-        data: data1.data,
+    const safeTransactionData = [];
+    for (let i = 0; i < members.length; i++) {
+      const data = await generateERC20Tx(
+        members[i],
+        (balance / members.length).toString(),
+        signer
+      );
+      safeTransactionData.push({
+        to: data.to,
+        data: data.data,
         value: "0",
         operation: OperationType.Call,
-      },
-      {
-        to: data2.to,
-        data: data2.data,
-        value: "0",
-        operation: OperationType.Call,
-      },
-    ];
-    // await proposeTransaction(safeTransactionData);
-
-    // const pdtxs = await getPendingTransactions();
-    // console.log(pdtxs.results[0]);
-    // approveTransaction(pdtxs.results[0].safeTxHash);
+      });
+    }
+    await proposeTransaction(safeTransactionData);
+    getTransactions();
   };
 
   const getTransactions = async () => {
     if (loading) return;
     const signer = await getEthSigner();
-    getBalance(signer).then((balance) =>
+    const address = await signer.getAddress();
+
+    let userData = await db.collection("User").record(address).get();
+    let teamData = await db.collection("Team").record(userData.data.team).get();
+    const safeAdd = teamData.data.safew;
+    setSafeAddress(safeAdd);
+    let i = 0;
+    let len = teamData.data.members.length;
+    console.log("Len", len);
+    let d = [];
+    while (i < len) {
+      let member = teamData.data.members[i].id;
+      const det = await db.collection("Details").record(member).get();
+      d.push(det.data);
+      i = i + 1;
+    }
+    const validMembers = d
+      .filter((member) => member.status === "Approved")
+      .map((member) => member.id);
+    console.log("d", validMembers);
+    setMembers(validMembers);
+
+    console.log(safeAdd);
+
+    getBalance(signer, safeAdd).then((balance) =>
       setBalance((balance / 10 ** 18).toFixed(2).toString())
     );
-    const address = await signer.getAddress();
     setUser(address);
-    const pdtxs = await getPendingTransactions();
+    const pdtxs = await getPendingTransactions(safeAdd);
     setPendingTransactions(pdtxs.results);
-    console.log(pdtxs.results[0]);
+    console.log(pdtxs.results);
   };
 
   async function getData() {
@@ -139,7 +156,7 @@ const Wallet = () => {
               <div className={styles.tableDivider} />
               <div style={{ width: "100px", display: "flex", gap: "0 10px" }}>
                 {tx.confirmations.find((c) => c.owner === user) ? (
-                  <div>
+                  <div onClick={() => onTransactionApprove(tx.safeTxHash)}>
                     <Icon
                       type="awaitingConfirmations"
                       size="md"

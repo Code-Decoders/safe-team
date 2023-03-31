@@ -14,13 +14,14 @@ import { useEffect, useState } from "react";
 const useTransaction = () => {
   const { safeAuth, loading } = useAuthKit();
 
+  const [safeAddress, setSafeAddress] = useState("");
+
   const relayAdapter = new GelatoRelayAdapter(
     process.env.NEXT_PUBLIC_GELATO_RELAY_API_KEY
   );
 
   const withdrawAmount = ethers.utils.parseUnits("0.0005", "ether").toString();
 
-  const safeAddress = "0xCB8eC99b9647c23C0F52D30f320bBf60a33D08B6";
   const chainId = 5;
   const txServiceUrl = "https://safe-transaction-goerli.safe.global";
   const gasLimit = "3000000";
@@ -41,7 +42,8 @@ const useTransaction = () => {
     return signer;
   };
 
-  const getPendingTransactions = async () => {
+  const getPendingTransactions = async (safeAddress) => {
+    setSafeAddress(safeAddress);
     const signer = await getEthSigner();
 
     const ethAdapter = new EthersAdapter({
@@ -49,7 +51,6 @@ const useTransaction = () => {
       signerOrProvider: signer,
     });
     const safeService = new SafeServiceClient({ txServiceUrl, ethAdapter });
-
     return await safeService.getPendingTransactions(safeAddress);
   };
 
@@ -180,6 +181,8 @@ const useTransaction = () => {
       origin: "SafeTeam",
     });
     console.log("Proposed");
+    console.log("Re Signing to ensure it works");
+    await approveTransaction(safeTxHash);
   };
 
   const toSafeTransactionType = async (serviceTransactionResponse, sdk) => {
