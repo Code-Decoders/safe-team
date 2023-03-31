@@ -17,22 +17,27 @@ const useSafeWallet = () => {
     const web3 = new Web3(provider);
 
     const address = (await web3.eth.getAccounts())[0];
+    console.log("address", address);
 
     const ethAdapter = new Web3Adapter({
       web3,
       signerAddress: address,
     });
+    console.log("ethAdapter", ethAdapter);
 
     const safeFactory = await SafeFactory.create({
       ethAdapter: ethAdapter,
     });
+    console.log("sf", safeFactory);
 
     const safeAccountConfig = {
       owners: owners,
       threshold: owners.length,
     };
+    
 
     const safeSdkOwner = await safeFactory.deploySafe({ safeAccountConfig });
+    console.log("owner", safeSdkOwner);
 
     const safeAddress = safeSdkOwner.getAddress();
 

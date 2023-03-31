@@ -7,8 +7,7 @@ import useAuthKit from "../../hooks/useAuthKit";
 import useSafeWallet from "../../hooks/useSafeWallet";
 
 const db = new Polybase({
-  defaultNamespace:
-    "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/Safe3",
+  defaultNamespace: "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/Safe4",
 });
 
 const Dashboard = () => {
@@ -105,7 +104,7 @@ const Dashboard = () => {
           <h3>Members: {members.length}</h3>
         </div>
         {!isWalletCreated &&
-          members.find((m) => m.role == "Leader").id == user && (
+          members.find((m) => m.role == "Leader")?.id == user && (
             <Button size="md" variant="contained" onClick={handleSubmit}>
               Submit
             </Button>
