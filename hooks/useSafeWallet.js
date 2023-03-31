@@ -1,7 +1,10 @@
 import { ethers } from "ethers";
 import EthersAdapter from "@safe-global/safe-ethers-lib";
 import { SafeFactory } from "@safe-global/safe-core-sdk";
-
+import {
+  GaslessWallet,
+  GaslessWalletConfig,
+} from "@gelatonetwork/gasless-wallet";
 /*
     This is a custom hook that can be used to create a Safe wallet.
 
@@ -11,7 +14,25 @@ import { SafeFactory } from "@safe-global/safe-core-sdk";
     create(await safeAuth.getProvider() , [safeAuth.getAddress(), ...teamMembers]);
 */
 
+const gaslessWalletConfig = {
+  apiKey: process.env.NEXT_PUBLIC_GELATO_RELAY_API_KEY,
+};
+
 const useSafeWallet = () => {
+  // only works for single user, hence used for solo applicants
+  const createGaslessWallet = async (safeAuth) => {
+    await safeAuth.signIn();
+
+    const ethProvider = new ethers.providers.Web3Provider(
+      await safeAuth.getProvider()
+    );
+
+    const gaslessWallet = new GaslessWallet(ethProvider, gaslessWalletConfig);
+    await gaslessWallet.init();
+
+    const gaslessWalletContractAddress = gaslessWallet.getAddress();
+    return gaslessWalletContractAddress;
+  };
   const create = async (safeAuth, owners) => {
     await safeAuth.signIn();
 
@@ -49,7 +70,7 @@ const useSafeWallet = () => {
     return safeAddress;
   };
 
-  return { create };
+  return { create, createGaslessWallet };
 };
 
 export default useSafeWallet;
