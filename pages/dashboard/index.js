@@ -29,16 +29,16 @@ const Dashboard = () => {
         console.log("Testing11")
         let temp1 = await db.collection("User").where("eoa", '==', eoa).get();
         let teamName = temp1.data[0].data.team;
-        console.log("EOA", temp1.data[0].data.team)
+        // console.log("EOA", temp1.data[0].data.team)
         console.log("Team name", teamName)
         let temp2 = await db.collection("Team").where("name", '==', teamName).get();
-        console.log("Team Data", temp2)
+        // console.log("Team Data", temp2)
         let ppl = temp2.data[0].data.members;
-        console.log("Ppl", ppl)
-        let member = ppl[0].id
+        // console.log("Ppl", ppl)
+        // let member = ppl[0].id
         // const det = await db.collection("Details").where("eoa", '==', member).get()
-        const det = await db.collection("Details").record(member).get()
-        console.log("Det", det.data) // this will return the complete details objectfor the first member of the team
+        // const det = await db.collection("Details").record(member).get()
+        // console.log("Det", det.data) // this will return the complete details objectfor the first member of the team
         let i = 0;
         let len = ppl.length;
         console.log("Len", len)

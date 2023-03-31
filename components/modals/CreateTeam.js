@@ -30,11 +30,11 @@ export function CreateTeam({ open, onClose, onSubmit }) {
     .collection("Team")
     .create([name, code]);// okay?yes!
     console.log("New Team created2");
+      
+    await db.collection("Details").create([eoa, "Approved", "Leader"]);
 
-    db.collection("Details").create([eoa, "Approved", "Leader"]);
-
-    db.collection('Team').record(name).call('addMember', [db.collection('Details').record(eoa)]) 
-    db.collection('User').record(eoa).call('addTeam', [name])
+    await db.collection('Team').record(name).call('addMember', [db.collection('Details').record(eoa)]) 
+    await db.collection('User').record(eoa).call('addTeam', [name])
     console.log(teamEntry)
     onSubmit(name);
     onClose();
