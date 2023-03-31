@@ -104,11 +104,12 @@ const Dashboard = () => {
           </h2>
           <h3>Members: {members.length}</h3>
         </div>
-        {!isWalletCreated && (
-          <Button size="md" variant="contained" onClick={handleSubmit}>
-            Submit
-          </Button>
-        )}
+        {!isWalletCreated &&
+          members.find((m) => m.role == "Leader").id == user && (
+            <Button size="md" variant="contained" onClick={handleSubmit}>
+              Submit
+            </Button>
+          )}
       </div>
       <div className={styles.memberTableHeader}>
         <div style={{ width: "100px" }}>#</div>
