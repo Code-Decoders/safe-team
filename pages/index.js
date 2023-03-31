@@ -10,7 +10,8 @@ import { Polybase } from "@polybase/client";
 import { useSafeWallet } from "../hooks/useSafeWallet";
 
 const db = new Polybase({
-  defaultNamespace: "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/SafeTeamDB",
+  defaultNamespace:
+    "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/Safe3",
 });
 
 export default function Home() {
@@ -37,23 +38,20 @@ export default function Home() {
       const eoa = response.eoa;
       let user;
       try {
-      console.log("Hello1");
-      user = await db.collection("User").record(eoa).get();
-      console.log("User Already exists");
-      setIsCreateOrJoinOpen(true);
-
-    } catch (e) {
-      // .create() accepts two params, address and name of user
-      // populate these dynamically with address and name of user
-      console.log("Hello2");
-      user = await db
-        .collection("User")
-        .create([eoa]);
-      console.log("New User created");
-      setIsCreateOrJoinOpen(true);
-    }
-    console.log("user is ", user);
-    user = user.data;
+        console.log("Hello1");
+        user = await db.collection("User").record(eoa).get();
+        console.log("User Already exists");
+        setIsCreateOrJoinOpen(true);
+      } catch (e) {
+        // .create() accepts two params, address and name of user
+        // populate these dynamically with address and name of user
+        console.log("Hello2");
+        user = await db.collection("User").create([eoa]);
+        console.log("New User created");
+        setIsCreateOrJoinOpen(true);
+      }
+      console.log("user is ", user);
+      user = user.data;
     }
   };
 
@@ -61,7 +59,7 @@ export default function Home() {
   //   console.log("New Team created1");
   //   setTeamName(teamName);
   //   console.log("team", teamName)
-  //   setOnCreate(true); 
+  //   setOnCreate(true);
   //   let teamEntry;
   //   let randomid = Math.random().toString(36).substring(7);
   //   teamEntry = await db
@@ -100,7 +98,8 @@ export default function Home() {
           onClose={() => setIsCreateClicked(false)}
           onSubmit={(team) => {
             setTeamName(team);
-            setOnCreate(true);}}
+            setOnCreate(true);
+          }}
         />
       )}
 

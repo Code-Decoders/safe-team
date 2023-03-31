@@ -7,7 +7,7 @@ import useAuthKit from "../../hooks/useAuthKit";
 
 const db = new Polybase({
   defaultNamespace:
-    "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/SafeTeamDB",
+    "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/Safe3",
 });
 
 const Dashboard = () => {
@@ -24,22 +24,14 @@ const Dashboard = () => {
       console.log("Testing10");
       console.log(response.eoa);
       const eoa = response.eoa;
+      setUser(eoa);
       console.log("Testing11");
-      let temp1 = await db.collection("User").where("eoa", "==", eoa).get();
-      let teamName = temp1.data[0].data.team;
+      let temp1 = await db.collection("User").record(eoa).get();
+      let teamName = temp1.data.team;
       console.log("Team name", teamName);
-      let temp2 = await db
-        .collection("Team")
-        .where("name", "==", teamName)
-        .get();
-      setTeamCode(temp2.data[0].data.tcode);
-      // console.log("Team Data", temp2)
-      let ppl = temp2.data[0].data.members;
-      // console.log("Ppl", ppl)
-      // let member = ppl[0].id
-      // const det = await db.collection("Details").where("eoa", '==', member).get()
-      // const det = await db.collection("Details").record(member).get()
-      // console.log("Det", det.data) // this will return the complete details objectfor the first member of the team
+      let temp2 = await db.collection("Team").record(teamName).get();
+      setTeamCode(temp2.data.tcode);
+      let ppl = temp2.data.members;
       let i = 0;
       let len = ppl.length;
       console.log("Len", len);
@@ -57,16 +49,25 @@ const Dashboard = () => {
     }
   }
 
-  function onApprove() {
-    // TODO: Approve the member @Maadhav
+  function onApprove(id) {
+    db.collection("Details")
+      .record(id)
+      .call("changeStatus", ["Approved"])
+      .then((_) => getData());
   }
 
-  function onReject() {
-    // TODO: Reject the member @Maadhav
+  function onReject(id) {
+    db.collection("Details")
+      .record(id)
+      .call("changeStatus", ["Disapproved"])
+      .then((_) => getData());
   }
 
-  function onRemove() {
-    // TODO: Remove the member @Maadhav
+  function onRemove(id) {
+    db.collection("Details")
+      .record(id)
+      .call("changeStatus", ["Removed"])
+      .then((_) => getData());
   }
 
   useEffect(() => {
@@ -106,29 +107,31 @@ const Dashboard = () => {
           <div className={styles.divider} />
           <div style={{ flex: 1 }}>{member.id}</div>
           <div className={styles.divider} />
-          <div style={{ width: "100px" }}>
-            {member.status ? "Approved" : "Pending"}
-          </div>
+          <div style={{ width: "100px" }}>{member.status}</div>
           <div className={styles.divider} />
           <div style={{ width: "100px" }}>{member.role}</div>
           <div className={styles.divider} />
-          <div style={{ width: "200px", display: "flex", gap: "0 10px" }}>
-            {!member.isAdmin && !member.isApproved && (
-              <div onClick={onApprove} style={{ cursor: "pointer" }}>
-                <Icon type="circleCheck" size="md" color="primary" />
-              </div>
-            )}
-            {member.role != "Admin" && !member.isApproved && (
-              <div onClick={onReject} style={{ cursor: "pointer" }}>
-                <Icon type="circleCross" size="md" color="error" />
-              </div>
-            )}
-            {member.role != "Admin" && member.isApproved && (
-              <div onClick={onRemove} style={{ cursor: "pointer" }}>
-                <Icon type="delete" size="md" color="error" />
-              </div>
-            )}
-          </div>
+          {members.find((m) => m.role == "Leader").id == user ? (
+            <div style={{ width: "200px", display: "flex", gap: "0 10px" }}>
+              {!(member.role == "Leader") && !member.status=="Unapproved" && (
+                <div onClick={()=>onApprove(member.id)} style={{ cursor: "pointer" }}>
+                  <Icon type="circleCheck" size="md" color="primary" />
+                </div>
+              )}
+              {member.role != "Leader" && !member.status=="Unapproved" && (
+                <div onClick={()=>onReject(member.id)} style={{ cursor: "pointer" }}>
+                  <Icon type="circleCross" size="md" color="error" />
+                </div>
+              )}
+              {member.role != "Leader" && member.status=="Unapproved" && (
+                <div onClick={()=>onRemove(member.id)} style={{ cursor: "pointer" }}>
+                  <Icon type="delete" size="md" color="error" />
+                </div>
+              )}
+            </div>
+          ) : (
+            <div style={{ width: "200px", display: "flex", gap: "0 10px" }} />
+          )}
         </div>
       ))}
     </div>
