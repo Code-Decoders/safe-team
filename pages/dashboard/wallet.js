@@ -1,18 +1,34 @@
 import { Divider } from "@mui/material";
+import { OperationType } from "@safe-global/safe-core-sdk-types";
 import React, { useEffect } from "react";
 import { Button, Icon } from "../../components/GnosisReact";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import useRampKit from "../../hooks/useRampKit";
-import useRelayKit from "../../hooks/useRelayKit";
+import useTransaction from "../../hooks/useTransaction";
+import { generateERC20Tx, getBalance } from "../../lib/erc20";
 import styles from "../../styles/Wallet.module.css";
 
 const Wallet = () => {
   const { openStripe } = useRampKit();
-  const { startRelay } = useRelayKit();
+
+  const [uiLoading, setUILoading] = React.useState(false);
+
+  const {
+    getPendingTransactions,
+    approveTransaction,
+    proposeTransaction,
+    rejectTransaction,
+    loading,
+    getEthSigner,
+  } = useTransaction();
 
   const [members, setMembers] = React.useState([]);
 
+  const [pendingTransactions, setPendingTransactions] = React.useState([]);
+
   const [user, setUser] = React.useState("");
+
+  const [balance, setBalance] = React.useState("");
 
   const stripeRootRef = React.useRef(null);
 
@@ -21,86 +37,147 @@ const Wallet = () => {
   };
 
   const handleSplitFunds = async () => {
-    startRelay();
+    const signer = await getEthSigner();
+    const data1 = await generateERC20Tx(
+      "0xF96b7fFd86d10106e986DdAfaefb02c6ef4424dd",
+      "1",
+      signer
+    );
+    const data2 = await generateERC20Tx(
+      "0x4FD3d5db6691c94DBe26302A1b49dE25410bCCb5",
+      "1",
+      signer
+    );
+
+    const safeTransactionData = [
+      {
+        to: data1.to,
+        data: data1.data,
+        value: "0",
+        operation: OperationType.Call,
+      },
+      {
+        to: data2.to,
+        data: data2.data,
+        value: "0",
+        operation: OperationType.Call,
+      },
+    ];
+    // await proposeTransaction(safeTransactionData);
+
+    // const pdtxs = await getPendingTransactions();
+    // console.log(pdtxs.results[0]);
+    // approveTransaction(pdtxs.results[0].safeTxHash);
   };
 
-  function getData() {
+  const getTransactions = async () => {
+    if (loading) return;
+    const signer = await getEthSigner();
+    getBalance(signer).then((balance) =>
+      setBalance((balance / 10 ** 18).toFixed(2).toString())
+    );
+    const address = await signer.getAddress();
+    setUser(address);
+    const pdtxs = await getPendingTransactions();
+    setPendingTransactions(pdtxs.results);
+    console.log(pdtxs.results[0]);
+  };
+
+  async function getData() {
     // TODO: Fetch Transaction from backend and display them in the table
-    setMembers([
-      {
-        email: "jainkunal976@gmail.com",
-        status: "Approved",
-      },
-      {
-        email: "maadhav2001@gmail.com",
-        status: "Pending",
-      },
-      {
-        email: "abc@gmail.com",
-        status: "Rejected",
-      },
-    ]);
-    setUser("maadhav2001@gmail.com");
+    setUILoading(true);
+    await getTransactions();
+    setUILoading(false);
   }
 
-  function onTransactionApprove() {}
+  async function onTransactionApprove(hash) {
+    await approveTransaction(hash);
+    getData();
+  }
 
-  function onTransactionReject() {}
+  async function onTransactionReject(hash) {
+    await rejectTransaction(hash);
+    getData();
+  }
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [loading]);
   return (
     <div className={styles.container}>
       <div style={{ flex: 1 }}>
         <div className={styles.walletContainer}>
           <div className={styles.walletHeader}>Total Balance</div>
-          <div className={styles.balance}>$10.00</div>
+
+          <div className={styles.balance}>
+            {"$ "}
+            {balance}
+          </div>
         </div>
         <div>
-          <div className={styles.transaction}>Pending Transaction</div>
+          <div className={styles.transaction}>Pending Transactions</div>
           <div className={styles.transactionHeader}>
-            <div style={{ width: "100px" }}>ID</div>
+            <div style={{ width: "100px" }}>Nonce</div>
             <div className={styles.tableDivider} />
-            <div style={{ flex: 1 }}>Email</div>
+            <div style={{ flex: 1 }}>Method</div>
             <div className={styles.tableDivider} />
-            <div style={{ width: "100px" }}>Status</div>
+            <div style={{ width: "200px" }}>Confirmations</div>
+            <div className={styles.tableDivider} />
+            <div style={{ width: "100px" }}>Actions</div>
           </div>
-          {members.map((member, index) => (
+          {pendingTransactions.map((tx, index) => (
             <div className={styles.transactionMemberTable} key={index}>
-              <div style={{ width: "100px" }}>{index + 1}</div>
+              <div style={{ width: "100px" }}>{tx.nonce}</div>
               <div className={styles.tableDivider} />
-              <div style={{ flex: 1 }}>{member.email}</div>
+              <div style={{ flex: 1 }}>{tx.dataDecoded.method}</div>
               <div className={styles.tableDivider} />
-              <div style={{ width: "100px" }}>
-                {member.status == "Approved" && (
-                  <Icon type="circleCheck" size="md" color="primary" />
-                )}
-                {member.status == "Pending" &&
-                  (member.email != user ? (
+              <div style={{ width: "200px" }}>
+                {tx.confirmations.length}
+                {"/"}
+                {tx.confirmationsRequired}
+              </div>
+              <div className={styles.tableDivider} />
+              <div style={{ width: "100px", display: "flex", gap: "0 10px" }}>
+                {tx.confirmations.find((c) => c.owner === user) ? (
+                  <div>
                     <Icon
                       type="awaitingConfirmations"
                       size="md"
                       color="pending"
+                      tooltip="Awaiting Confirmations"
                     />
-                  ) : (
-                    <div style={{ display: "flex", gap: "0 10px" }}>
-                      <div
-                        onClick={onTransactionApprove}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <Icon type="check" size="md" color="primary" />
-                      </div>
-                      <div
-                        onClick={onTransactionReject}
-                        style={{ cursor: "pointer" }}
-                      >
-                        <Icon type="cross" size="md" color="pending" />
-                      </div>
-                    </div>
-                  ))}
-                {member.status == "Rejected" && (
-                  <Icon type="circleCross" size="md" color="error" />
+                  </div>
+                ) : (
+                  <div
+                    onClick={() => onTransactionApprove(tx.safeTxHash)}
+                    style={{
+                      cursor: "pointer",
+                    }}
+                  >
+                    <Icon
+                      type="circleCheck"
+                      size="md"
+                      color="primary"
+                      tooltip="Approve Transaction"
+                    />
+                  </div>
+                )}
+                {tx.confirmations.find((c) => c.owner === user) ? (
+                  <></>
+                ) : (
+                  <div
+                    onClick={() => onTransactionReject(tx.safeTxHash)}
+                    style={{
+                      cursor: "pointer",
+                    }}
+                  >
+                    <Icon
+                      type="circleCross"
+                      size="md"
+                      color="error"
+                      tooltip="Reject Transaction"
+                    />
+                  </div>
                 )}
               </div>
             </div>

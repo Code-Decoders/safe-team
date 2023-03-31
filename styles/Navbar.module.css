@@ -38,3 +38,11 @@
     background-color: #ffffff44;
     color: #fff;
 }
+
+.ethHashInfo p {
+    color: white !important;
+}
+
+.ethHashInfo {
+    margin-bottom: 20px;
+}
