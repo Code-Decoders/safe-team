@@ -19,7 +19,7 @@ collection User {
   // `id` is unique and required on all collections
   id: string;
   eoa: string;
-  teams: string[];
+  team: string; //team's name
 
   // `constructor` is called when a new record is
   // created, make sure to assign a value to `this.id`
@@ -28,11 +28,10 @@ collection User {
     // `this.id` must be unique in collection
     this.id = _eoa;
     this.eoa = _eoa;
-    this.teams = [];
   }
 
   addTeam (_team: string) {
-    this.teams.push(_team);
+    this.team = _team;
   }
 }
 
@@ -42,25 +41,41 @@ collection Team {
   id: string;
   safew: string;
   name: string;
+  tcode: string;
   members: Details[];
 
   // `constructor` is called when a new record is
   // created, make sure to assign a value to `this.id`
-  constructor (_id: string, _name: string) {
+  constructor (_id: string, _code:string) {
     // `this.id` must be assigned in the constructor
     // `this.id` must be unique in collection
     this.id = _id;
     this.safew = _id;
-    this.name = _name;
+    this.name = _id;
+    this.tcode = _code;
     this.members = []; //a 2d array - [[id/eoa, status - approved/disapproved, role - admin/member], [], [], ...] - fixed. 
   }
 
-  function addMember (_add: string, _status:string, _role:string) {
+  function addMember (member: Details) {
     //this.members.push([_add, _status, _role]);
-    this.members.push(Details([_add, _status, _role]));
+    this.members.push(member);
   }
 
   function addSafeW (_safew: string) {
     this.safew = _safew;
   }
 }
+
+// @public
+// collection TM {
+
+//   id: string;
+//   team: string; //team's name
+//   teamid: string;
+
+//   constructor (_id:string, _team:string, _teamid:string){
+//     this.id = _id;
+//     this.team = _team;
+//     this.teamid = _teamid;
+//   }
+// }

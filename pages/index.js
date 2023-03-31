@@ -143,7 +143,7 @@ export default function Home() {
           }
           buttonText={"Go to Dashboard"}
           onClick={() => {
-            var url = "/dashboard/"+{teamName};
+            var url = "/dashboard";
             var a = document.createElement("a");
             a.href = url;
             a.click();

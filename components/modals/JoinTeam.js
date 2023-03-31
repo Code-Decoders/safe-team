@@ -1,8 +1,46 @@
 import { useState } from "react";
 import { Button, GenericModal, TextFieldInput } from "../GnosisReact";
+import useAuthKit from "../../hooks/useAuthKit";
+import { Polybase } from "@polybase/client";
+
+
+const db = new Polybase({
+  defaultNamespace: "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/SafeTeam",
+});
 
 export function JoinTeam({ open, onClose, onClick }) {
   const [code, setCode] = useState("");
+  const { safeAuth } = useAuthKit();
+
+
+  async function joining() {
+ 
+    console.log("Here")
+    if (safeAuth) {
+      const response = await safeAuth.signIn();
+      console.log("Testing1");
+      console.log(response.eoa);
+      const eoa = response.eoa;
+    let team;
+    try{team = await db.collection("Team").where("tcode", '==', code).get();}
+    catch(e){console.log("No team exists with given code.");}
+    const deets = await db.collection("Details").create([eoa, "Unapproved", "Member"]);
+    console.log("Temp1", deets)
+    try {addDeet = await db.collection('Team').where("tcode", '==', code).call('addMember', [db.collection('Details').record(eoa)]);}
+    catch(e){console.log("Unable to add member's deets");}
+    console.log(team.data);
+    let tn = team.data.name;
+    // let teamToRemoveUserFrom 
+    // let temp = await db.collection('User').record(eoa).get()
+    await db.collection('User').where("eoa", '==', eoa).call('addTeam', [tn])
+    console.log(teamEntry)
+    onClick(code);
+    onClose();
+
+    }
+  }
+
+
   return (
     <GenericModal
       onClose={onClose}
@@ -20,10 +58,7 @@ export function JoinTeam({ open, onClose, onClick }) {
           <Button
             size="md"
             variant="contained"
-            onClick={() => {
-              onClick(code);
-              onClose();
-            }}
+            onClick={joining}
           >
             Join
           </Button>

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Button, GenericModal, TextFieldInput } from "../GnosisReact";
 import { Polybase } from "@polybase/client";
+import useAuthKit from "../../hooks/useAuthKit";
+
 
 
 const db = new Polybase({
@@ -9,20 +11,34 @@ const db = new Polybase({
 
 export function CreateTeam({ open, onClose, onSubmit }) {
   const [name, setName] = useState("");
+  const { safeAuth } = useAuthKit();
+
 
   async function addTeam() {
+    if (safeAuth) {
+      const response = await safeAuth.signIn();
+      console.log("Testing1");
+      console.log(response.eoa);
+      const eoa = response.eoa; 
+  
     console.log("New Team created1");
     setName(name);
-    console.log("team", name)
+    console.log("Team:", name)
     let teamEntry;
-    let randomid = Math.random().toString(36).substring(7);
+    let code = Math.random().toString(36).substring(5);
     teamEntry = await db
     .collection("Team")
-    .create([randomid, name]);
+    .create([name, code]);// okay?yes!
     console.log("New Team created2");
+
+    db.collection("Details").create([eoa, "Approved", "Leader"]);
+
+    db.collection('Team').record(name).call('addMember', [db.collection('Details').record(eoa)]) 
+    db.collection('User').record(eoa).call('addTeam', [name])
     console.log(teamEntry)
     onSubmit(name);
     onClose();
+    }
   }
 
   return (
