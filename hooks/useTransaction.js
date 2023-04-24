@@ -23,7 +23,7 @@ const useTransaction = () => {
   const withdrawAmount = ethers.utils.parseUnits("0.0005", "ether").toString();
 
   const chainId = 5;
-  const txServiceUrl = "https://safe-transaction-goerli.safe.global";
+  const txServiceUrl = "https://safe-transaction-polygon.safe.global";
   const gasLimit = "3000000";
 
   const options = {
