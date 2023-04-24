@@ -65,7 +65,7 @@ const useSafeWallet = () => {
 
     console.log("Your Safe has been deployed:");
     console.log(`https://mumbai.polygonscan.com/address/${safeAddress}`);
-    console.log(`https://app.safe.global/polygon:${safeAddress}`);
+    console.log(`https://app.safe.global/mat:${safeAddress}`);
 
     return safeAddress;
   };
