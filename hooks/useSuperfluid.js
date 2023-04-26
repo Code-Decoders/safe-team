@@ -148,6 +148,7 @@ const useSuperfluid = () => {
     return await fUSDCx.realtimeBalanceOf({
       providerOrSigner: signer,
       account: safeAddress ?? (await signer.getAddress()),
+      timestamp: Math.floor(new Date().getTime() / 1000) - 180,
     });
   }
 
