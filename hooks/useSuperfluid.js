@@ -79,25 +79,91 @@ const useSuperfluid = () => {
     return calldata;
   };
 
-  const createWithdrawTx = async (amount) => {
-    const downgradeOperation = daix.downgrade({
-      amount: amount
+  const createUpdateFlowTx = async (from, members, flowRate) => {
+    const txs = [];
+
+    for (let i = 0; i < members.length; i++) {
+      const updateFlowOperation = fUSDCx.updateFlow({
+        sender: from,
+        receiver: members[i],
+        flowRate: flowRate,
+      });
+      txs.push(updateFlowOperation);
+    }
+
+    const ops = await Promise.all(
+      sf.batchCall(txs).getOperationStructArrayPromises
+    );
+    const host = sf.contracts.host.connect(signer);
+    const calldata = await host.populateTransaction.batchCall(ops, {
+      gasLimit: 2000000,
     });
+    return calldata;
   };
 
-  async function getBalance(address) {
+  const createStopFlowTx = async (from, members) => {
+    const txs = [];
+
+    for (let i = 0; i < members.length; i++) {
+      const deleteFlowOperation = fUSDCx.deleteFlow({
+        sender: from,
+        receiver: members[i],
+      });
+      txs.push(deleteFlowOperation);
+    }
+
+    const ops = await Promise.all(
+      sf.batchCall(txs).getOperationStructArrayPromises
+    );
+    const host = sf.contracts.host.connect(signer);
+    const calldata = await host.populateTransaction.batchCall(ops, {
+      gasLimit: 2000000,
+    });
+    return calldata;
+  };
+
+  const createWithdrawTx = async (amount) => {
+    const downgradeOperation = fUSDCx.downgrade({
+      amount: amount,
+    });
+
+    return await downgradeOperation.populateTransactionPromise;
+  };
+
+  const getStream = async (safeAddress) => {
+    const stream = await fUSDCx.getFlow({
+      sender: safeAddress,
+      receiver: await signer.getAddress(),
+      providerOrSigner: signer,
+    });
+    return stream;
+  };
+
+  async function getUSDCBalance(address) {
     const fusdc = fUSDCx.underlyingToken.contract.connect(signer);
     return await fusdc.balanceOf(address);
+  }
+
+  async function getUSDCxBalance(safeAddress = undefined) {
+    return await fUSDCx.realtimeBalanceOf({
+      providerOrSigner: signer,
+      account: safeAddress ?? (await signer.getAddress()),
+    });
   }
 
   return {
     init,
     calculateFlowRate,
     sfLoaded,
-    getBalance,
+    getUSDCBalance,
+    getUSDCxBalance,
     createTransferTx,
     createApproveTx,
     createFlowTx,
+    createWithdrawTx,
+    getStream,
+    createUpdateFlowTx,
+    createStopFlowTx,
   };
 };
 

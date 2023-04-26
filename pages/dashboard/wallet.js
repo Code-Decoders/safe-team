@@ -31,10 +31,13 @@ const Wallet = () => {
   const {
     init,
     createApproveTx,
-    getBalance,
+    getUSDCBalance,
+    getUSDCxBalance,
     sfLoaded,
     createTransferTx,
     createFlowTx,
+    createWithdrawTx,
+    getStream,
   } = useSuperfluid();
 
   const [members, setMembers] = React.useState([]);
@@ -48,6 +51,8 @@ const Wallet = () => {
   const stripeRootRef = React.useRef(null);
 
   const [safeAddress, setSafeAddress] = React.useState("");
+
+  const [stream, setStream] = React.useState(null);
 
   const handleAddFunds = async () => {
     await openStripe(safeAddress);
@@ -90,16 +95,38 @@ const Wallet = () => {
       value: "0",
       operation: OperationType.Call,
     });
+    getTransactions();
   };
 
-  const getUSDCBalance = async () => {
-    getBalance(safeAddress).then((balance) =>
+  const getBalance = async () => {
+    getUSDCBalance(safeAddress).then((balance) =>
       setBalance((balance / 10 ** 18).toFixed(2).toString())
     );
+    getUSDCxBalance(safeAddress).then(console.log);
+    getStream(safeAddress).then((stream) => {
+      if (new Date(stream.timestamp).getTime() != 0) {
+        setStream(stream);
+      }
+    });
   };
 
   useEffect(() => {
-    if (sfLoaded && safeAddress) getUSDCBalance();
+    const intervalId = setInterval(() => {
+      if (stream) {
+        getUSDCxBalance(safeAddress).then((balance) => {
+          setBalance(
+            (balance.availableBalance / 10 ** 18).toFixed(6).toString()
+          );
+        });
+      }
+    }, 1000);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [stream]);
+
+  useEffect(() => {
+    if (sfLoaded && safeAddress) getBalance();
   }, [sfLoaded, safeAddress]);
 
   async function getTransactions() {
@@ -181,7 +208,7 @@ const Wallet = () => {
             <div className={styles.transactionMemberTable} key={index}>
               <div style={{ width: "100px" }}>{tx.nonce}</div>
               <div className={styles.tableDivider} />
-              <div style={{ flex: 1 }}>{tx.dataDecoded.method}</div>
+              <div style={{ flex: 1 }}>{tx.dataDecoded?.method ?? "NA"}</div>
               <div className={styles.tableDivider} />
               <div style={{ width: "200px" }}>
                 {tx.confirmations.length}
