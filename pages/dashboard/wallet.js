@@ -8,6 +8,8 @@ import useTransaction from "../../hooks/useTransaction";
 import styles from "../../styles/Wallet.module.css";
 import { Polybase } from "@polybase/client";
 import useSuperfluid from "../../hooks/useSuperfluid";
+import { Button, GenericModal, TextFieldInput } from "../GnosisReact";
+
 
 const db = new Polybase({
   defaultNamespace:
@@ -53,6 +55,14 @@ const Wallet = () => {
   const [safeAddress, setSafeAddress] = React.useState("");
 
   const [stream, setStream] = React.useState(null);
+
+  const [showModal, setShowModal] = useState(false);
+
+  const [flowrate, setflowRate] = useState(0);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   const handleAddFunds = async () => {
     await openStripe(safeAddress);
@@ -264,6 +274,8 @@ const Wallet = () => {
         </div>
       </div>
       <div className={styles.divider} />
+      
+
       <div style={{ display: "flex", flexDirection: "column", gap: "10px 0" }}>
         <Button size="lg" onClick={handleAddFunds}>
           Add
@@ -271,14 +283,45 @@ const Wallet = () => {
         <Divider />
         <Button size="lg" onClick={handleSplitFunds}>
           Split
-        </Button>
-        <Divider />
-        <Button size="lg" onClick={handleStreamFunds}>
-          Stream
-        </Button>
+        </Button>    
         <Divider />
         <Button size="lg">Stake</Button>
+        <Divider />
+        {stream !== null ? (
+          <div>
+          <Button size="lg" onClick={() => setShowModal(true)}>
+          Update Stream
+          </Button>
+          {showModal && (
+          <GenericModal
+          title="Update Stream"
+          body={
+            <div
+              style={{ display: "flex", flexDirection: "column", gap: "20px 0" }}
+            >
+              <TextFieldInput
+                hiddenLabel
+                placeholder="Enter the flow-rate you want to change to"
+                onChange={(e) => setflowRate(e.currentTarget.value)}
+              />
+              <Button size="md" variant="contained" onClick={joining}>
+                Update Stream
+              </Button>
+            </div>
+          }
+        />)}
+          <Divider />
+          <Button size="lg">
+          Stop Stream
+          </Button>
+          </div>
+        ) : (
+          <Button size="lg" onClick={handleStreamFunds}>
+            Start Stream
+          </Button>
+        )}      
       </div>
+
       <div
         id="stripe-root"
         ref={stripeRootRef}
