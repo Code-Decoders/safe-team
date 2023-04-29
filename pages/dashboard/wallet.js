@@ -8,8 +8,6 @@ import useTransaction from "../../hooks/useTransaction";
 import styles from "../../styles/Wallet.module.css";
 import { Polybase } from "@polybase/client";
 import useSuperfluid from "../../hooks/useSuperfluid";
-import { Button, GenericModal, TextFieldInput } from "../GnosisReact";
-
 
 const db = new Polybase({
   defaultNamespace:
@@ -288,8 +286,8 @@ const Wallet = () => {
         <Button size="lg">Stake</Button>
         <Divider />
         {stream !== null ? (
-          <div>
-          <Button size="lg" onClick={() => setShowModal(true)}>
+          <div>            
+          <Button size="lg" onClick={() => setShowModal(true)} style={{padding:'10px'}}>
           Update Stream
           </Button>
           {showModal && (
@@ -304,14 +302,14 @@ const Wallet = () => {
                 placeholder="Enter the flow-rate you want to change to"
                 onChange={(e) => setflowRate(e.currentTarget.value)}
               />
-              <Button size="md" variant="contained" onClick={joining}>
+              <Button size="md" variant="contained">
                 Update Stream
               </Button>
             </div>
           }
         />)}
           <Divider />
-          <Button size="lg">
+          <Button size="lg" style={{padding:'10px'}}>
           Stop Stream
           </Button>
           </div>
