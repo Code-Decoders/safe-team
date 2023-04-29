@@ -153,10 +153,11 @@ const useTransaction = () => {
     safeService.getPendingTransactions(safeAddress).then((res) => {
       console.log(res);
     });
-
+    const nonce = await safeService.getNextNonce(safeAddress);
+    console.log(nonce);
+    safeTransactionData.nonce = nonce;
     const safeTransaction = await safeSDK.createTransaction({
       safeTransactionData,
-      // nonce is error is there
     });
 
     const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);

@@ -5,12 +5,13 @@ import { Button, Icon } from "../../components/GnosisReact";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import useRampKit from "../../hooks/useRampKit";
 import useTransaction from "../../hooks/useTransaction";
-import { generateERC20Tx, getBalance } from "../../lib/erc20";
 import styles from "../../styles/Wallet.module.css";
 import { Polybase } from "@polybase/client";
+import useSuperfluid from "../../hooks/useSuperfluid";
 
 const db = new Polybase({
-  defaultNamespace: "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/Safe4",
+  defaultNamespace:
+    "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/Safe4",
 });
 
 const Wallet = () => {
@@ -27,6 +28,18 @@ const Wallet = () => {
     getEthSigner,
   } = useTransaction();
 
+  const {
+    init,
+    createApproveTx,
+    getUSDCBalance,
+    getUSDCxBalance,
+    sfLoaded,
+    createTransferTx,
+    createFlowTx,
+    createWithdrawTx,
+    getStream,
+  } = useSuperfluid();
+
   const [members, setMembers] = React.useState([]);
 
   const [pendingTransactions, setPendingTransactions] = React.useState([]);
@@ -39,18 +52,18 @@ const Wallet = () => {
 
   const [safeAddress, setSafeAddress] = React.useState("");
 
+  const [stream, setStream] = React.useState(null);
+
   const handleAddFunds = async () => {
     await openStripe(safeAddress);
   };
 
   const handleSplitFunds = async () => {
-    const signer = await getEthSigner();
     const safeTransactionData = [];
     for (let i = 0; i < members.length; i++) {
-      const data = await generateERC20Tx(
-        members[i],
+      const data = await createTransferTx(
         (balance / members.length).toString(),
-        signer
+        members[i]
       );
       safeTransactionData.push({
         to: data.to,
@@ -63,11 +76,64 @@ const Wallet = () => {
     getTransactions();
   };
 
-  const getTransactions = async () => {
+  const handleStreamFunds = async () => {
+    const approveOperation = await createApproveTx(balance);
+    await proposeTransaction({
+      to: approveOperation.to,
+      data: approveOperation.data,
+      value: "0",
+      operation: OperationType.Call,
+    });
+    const createStreamOperation = await createFlowTx(
+      balance,
+      safeAddress,
+      members
+    );
+    await proposeTransaction({
+      to: createStreamOperation.to,
+      data: createStreamOperation.data,
+      value: "0",
+      operation: OperationType.Call,
+    });
+    getTransactions();
+  };
+
+  const getBalance = async () => {
+    getUSDCBalance(safeAddress).then((balance) =>
+      setBalance((balance / 10 ** 18).toFixed(2).toString())
+    );
+    getUSDCxBalance(safeAddress).then(console.log);
+    getStream(safeAddress).then((stream) => {
+      if (new Date(stream.timestamp).getTime() != 0) {
+        setStream(stream);
+      }
+    });
+  };
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      if (stream) {
+        getUSDCxBalance(safeAddress).then((balance) => {
+          setBalance(
+            (balance.availableBalance / 10 ** 18).toFixed(6).toString()
+          );
+        });
+      }
+    }, 1000);
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, [stream]);
+
+  useEffect(() => {
+    if (sfLoaded && safeAddress) getBalance();
+  }, [sfLoaded, safeAddress]);
+
+  async function getTransactions() {
     if (loading) return;
     const signer = await getEthSigner();
     const address = await signer.getAddress();
-
+    await init(signer);
     let userData = await db.collection("User").record(address).get();
     let teamData = await db.collection("Team").record(userData.data.team).get();
     const safeAdd = teamData.data.safew;
@@ -90,14 +156,11 @@ const Wallet = () => {
 
     console.log(safeAdd);
 
-    getBalance(signer, safeAdd).then((balance) =>
-      setBalance((balance / 10 ** 18).toFixed(2).toString())
-    );
     setUser(address);
     const pdtxs = await getPendingTransactions(safeAdd);
     setPendingTransactions(pdtxs.results);
     console.log(pdtxs.results);
-  };
+  }
 
   async function getData() {
     // TODO: Fetch Transaction from backend and display them in the table
@@ -145,7 +208,7 @@ const Wallet = () => {
             <div className={styles.transactionMemberTable} key={index}>
               <div style={{ width: "100px" }}>{tx.nonce}</div>
               <div className={styles.tableDivider} />
-              <div style={{ flex: 1 }}>{tx.dataDecoded.method}</div>
+              <div style={{ flex: 1 }}>{tx.dataDecoded?.method ?? "NA"}</div>
               <div className={styles.tableDivider} />
               <div style={{ width: "200px" }}>
                 {tx.confirmations.length}
@@ -210,7 +273,9 @@ const Wallet = () => {
           Split
         </Button>
         <Divider />
-        <Button size="lg">Stream</Button>
+        <Button size="lg" onClick={handleStreamFunds}>
+          Stream
+        </Button>
         <Divider />
         <Button size="lg">Stake</Button>
       </div>
