@@ -297,6 +297,7 @@ const Wallet = () => {
             <div
               style={{ display: "flex", flexDirection: "column", gap: "20px 0" }}
             >
+              <span className="close" onClick={handleCloseModal}>&times;</span>
               <TextFieldInput
                 hiddenLabel
                 placeholder="Enter the flow-rate you want to change to"
