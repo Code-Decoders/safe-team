@@ -10,6 +10,7 @@ import useAuthKit from "./useAuthKit";
 import { OperationType } from "@safe-global/safe-core-sdk-types";
 import SafeServiceClient from "@safe-global/safe-service-client";
 import { useEffect, useState } from "react";
+import { GelatoRelay } from "@gelatonetwork/relay-sdk";
 
 const useTransaction = () => {
   const { safeAuth, loading } = useAuthKit();
@@ -19,8 +20,6 @@ const useTransaction = () => {
   const relayAdapter = new GelatoRelayAdapter(
     process.env.NEXT_PUBLIC_GELATO_RELAY_API_KEY
   );
-
-  const withdrawAmount = ethers.utils.parseUnits("0.0005", "ether").toString();
 
   const chainId = 5;
   const txServiceUrl = "https://safe-transaction-goerli.safe.global";
@@ -153,10 +152,11 @@ const useTransaction = () => {
     safeService.getPendingTransactions(safeAddress).then((res) => {
       console.log(res);
     });
-
+    const nonce = await safeService.getNextNonce(safeAddress);
+    console.log(nonce);
+    safeTransactionData.nonce = nonce;
     const safeTransaction = await safeSDK.createTransaction({
       safeTransactionData,
-      // nonce is error is there
     });
 
     const safeTxHash = await safeSDK.getTransactionHash(safeTransaction);
@@ -211,6 +211,25 @@ const useTransaction = () => {
     });
     return safeTransaction;
   };
+
+  const executeTransactionForEOA = async (calldata, target) => {
+    const relay = new GelatoRelay();
+
+    const request = {
+      chainId,
+      target,
+      data: calldata,
+    };
+
+    const relayResponse = await relay.sponsoredCall(
+      request,
+      process.env.NEXT_PUBLIC_GELATO_RELAY_API_KEY
+    );
+
+    console.log(
+      `Relay Transaction Task ID: https://relay.gelato.digital/tasks/status/${relayResponse.taskId}`
+    );
+  };
   return {
     proposeTransaction,
     getPendingTransactions,
@@ -218,6 +237,7 @@ const useTransaction = () => {
     rejectTransaction,
     getEthSigner,
     loading,
+    executeTransactionForEOA,
   };
 };
 
