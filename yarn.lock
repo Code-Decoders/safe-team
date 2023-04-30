@@ -783,7 +783,7 @@
     axios "0.24.0"
     ethers "5.7.2"
 
-"@gelatonetwork/relay-sdk@^3.1.0":
+"@gelatonetwork/relay-sdk@^3.1.0", "@gelatonetwork/relay-sdk@^3.5.0":
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/@gelatonetwork/relay-sdk/-/relay-sdk-3.5.0.tgz#f8592b17492a582421dbeea39ec03180f82d20f3"
   integrity sha512-oj4rFH09yzFT4wnYCv7V3bZCIVhpuKbnK5jv0fgzclxTbbA6UEWZErn3QiD13yspiIkKafSgMWT0G8z41CINYg==

@@ -32,6 +32,7 @@ const Wallet = () => {
     rejectTransaction,
     loading,
     getEthSigner,
+    executeTransactionForEOA,
   } = useTransaction();
 
   const {
@@ -66,6 +67,8 @@ const Wallet = () => {
   const [showModal, setShowModal] = React.useState(false);
 
   const [days, setDays] = React.useState(0);
+
+  const [userBalance, setUserBalance] = React.useState(0);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -147,6 +150,18 @@ const Wallet = () => {
     handleCloseModal();
   };
 
+  const handleCollect = async () => {
+    const withdrawOperation = await createWithdrawTx(
+      ethers.utils.parseUnits(userBalance.toString(), 18)
+    );
+    console.log(withdrawOperation);
+    // await executeTransactionForEOA(
+    //   withdrawOperation.data,
+    //   withdrawOperation.to
+    // );
+    getTransactions();
+  };
+
   const getBalance = async () => {
     getUSDCBalance(safeAddress).then((balance) =>
       setBalance((balance / 10 ** 18).toFixed(2).toString())
@@ -167,12 +182,18 @@ const Wallet = () => {
             (balance.availableBalance / 10 ** 18).toFixed(6).toString()
           );
         });
+        if (user)
+          getUSDCxBalance(user).then((balance) => {
+            setUserBalance(
+              (balance.availableBalance / 10 ** 18).toFixed(2).toString()
+            );
+          });
       }
     }, 1000);
     return () => {
       clearInterval(intervalId);
     };
-  }, [stream]);
+  }, [stream, user]);
 
   useEffect(() => {
     if (sfLoaded && safeAddress) getBalance();
@@ -349,6 +370,38 @@ const Wallet = () => {
             style={{ width: "100%", height: "auto", padding: "0 40px" }}
           />
         </div>
+        {stream != null ? (
+          <>
+            <Button
+              size="lg"
+              onClick={() => {
+                setShowModal(true);
+              }}
+            >
+              Update Stream
+            </Button>
+            <Divider />
+            <Button size="lg" onClick={handleStopStream}>
+              Stop Stream
+            </Button>
+            <Divider />
+            <Button size="lg" onClick={handleCollect}>
+              Collect ${userBalance}
+            </Button>
+          </>
+        ) : (
+          <Button size="lg" onClick={handleStreamFunds}>
+            Start Stream
+          </Button>
+        )}
+
+        <div
+          id="stripe-root"
+          ref={stripeRootRef}
+          style={{
+            zIndex: 1000,
+          }}
+        ></div>
         {showModal && (
           <GenericModal
             onClose={handleCloseModal}
@@ -378,35 +431,6 @@ const Wallet = () => {
             }
           />
         )}
-        {stream != null ? (
-          <>
-            <Button
-              size="lg"
-              onClick={() => {
-                setShowModal(true);
-              }}
-            >
-              Update Stream
-            </Button>
-            <Divider />
-            <Button size="lg" onClick={handleStopStream}>
-              Stop Stream
-            </Button>
-            <Divider />
-          </>
-        ) : (
-          <Button size="lg" onClick={handleStreamFunds}>
-            Start Stream
-          </Button>
-        )}
-
-        <div
-          id="stripe-root"
-          ref={stripeRootRef}
-          style={{
-            zIndex: 1000,
-          }}
-        ></div>
       </div>
     </div>
   );
