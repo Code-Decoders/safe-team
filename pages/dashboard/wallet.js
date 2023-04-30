@@ -349,16 +349,6 @@ const Wallet = () => {
             style={{ width: "100%", height: "auto", padding: "0 40px" }}
           />
         </div>
-        {stream && (
-          <Button
-            size="lg"
-            onClick={() => {
-              setShowModal(true);
-            }}
-          >
-            Update Stream
-          </Button>
-        )}
         {showModal && (
           <GenericModal
             onClose={handleCloseModal}
@@ -388,11 +378,22 @@ const Wallet = () => {
             }
           />
         )}
-        <Divider />
-        {stream !== null ? (
-          <Button size="lg" onClick={handleStopStream}>
-            Stop Stream
-          </Button>
+        {stream != null ? (
+          <>
+            <Button
+              size="lg"
+              onClick={() => {
+                setShowModal(true);
+              }}
+            >
+              Update Stream
+            </Button>
+            <Divider />
+            <Button size="lg" onClick={handleStopStream}>
+              Stop Stream
+            </Button>
+            <Divider />
+          </>
         ) : (
           <Button size="lg" onClick={handleStreamFunds}>
             Start Stream
