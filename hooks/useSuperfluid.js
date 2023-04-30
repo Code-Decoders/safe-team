@@ -28,8 +28,9 @@ const useSuperfluid = () => {
     return { sf, superSigner };
   }
 
-  const calculateFlowRate = (amount) => {
-    let fr = amount / (86400 * 30);
+  const calculateFlowRate = (amount, seconds = 2592000) => {
+    //seconds = 2592000
+    let fr = amount / seconds;
     return Math.floor(fr);
   };
 
@@ -123,11 +124,11 @@ const useSuperfluid = () => {
   };
 
   const createWithdrawTx = async (amount) => {
-    const downgradeOperation = fUSDCx.downgrade({
-      amount: amount,
-    });
+    const downgradeOperation = fUSDCx.contract
+      .connect(signer)
+      .downgrade(amount);
 
-    return await downgradeOperation.populateTransactionPromise;
+    // return await downgradeOperation.populateTransactionPromise;
   };
 
   const getStream = async (safeAddress) => {
@@ -145,11 +146,15 @@ const useSuperfluid = () => {
   }
 
   async function getUSDCxBalance(safeAddress = undefined) {
-    return await fUSDCx.realtimeBalanceOf({
-      providerOrSigner: signer,
-      account: safeAddress ?? (await signer.getAddress()),
-      timestamp: Math.floor(new Date().getTime() / 1000) - 180,
-    });
+    try {
+      var balance = await fUSDCx.realtimeBalanceOf({
+        providerOrSigner: signer,
+        account: safeAddress ?? (await signer.getAddress()),
+        timestamp: Math.floor(new Date().getTime() / 1000) - 180,
+      });
+    } catch (error) {}
+
+    return balance;
   }
 
   return {

@@ -79,7 +79,7 @@ export default function Home() {
       </div>
       <p style={{ marginBottom: "50px" }}>HACKATHON</p>
       <Button size="lg" variant="bordered" onClick={handleRegister}>
-        Register
+        Sign Up / Sign In
       </Button>
 
       {isCreateOrJoinOpen && (

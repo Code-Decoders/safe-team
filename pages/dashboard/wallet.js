@@ -1,13 +1,19 @@
 import { Divider } from "@mui/material";
 import { OperationType } from "@safe-global/safe-core-sdk-types";
 import React, { useEffect } from "react";
-import { Button, Icon } from "../../components/GnosisReact";
+import {
+  Button,
+  Icon,
+  GenericModal,
+  TextFieldInput,
+} from "../../components/GnosisReact";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import useRampKit from "../../hooks/useRampKit";
 import useTransaction from "../../hooks/useTransaction";
 import styles from "../../styles/Wallet.module.css";
 import { Polybase } from "@polybase/client";
 import useSuperfluid from "../../hooks/useSuperfluid";
+import { ethers } from "ethers";
 
 const db = new Polybase({
   defaultNamespace:
@@ -26,6 +32,7 @@ const Wallet = () => {
     rejectTransaction,
     loading,
     getEthSigner,
+    executeTransactionForEOA,
   } = useTransaction();
 
   const {
@@ -38,6 +45,9 @@ const Wallet = () => {
     createFlowTx,
     createWithdrawTx,
     getStream,
+    createStopFlowTx,
+    createUpdateFlowTx,
+    calculateFlowRate,
   } = useSuperfluid();
 
   const [members, setMembers] = React.useState([]);
@@ -53,6 +63,16 @@ const Wallet = () => {
   const [safeAddress, setSafeAddress] = React.useState("");
 
   const [stream, setStream] = React.useState(null);
+
+  const [showModal, setShowModal] = React.useState(false);
+
+  const [days, setDays] = React.useState(0);
+
+  const [userBalance, setUserBalance] = React.useState(0);
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   const handleAddFunds = async () => {
     await openStripe(safeAddress);
@@ -98,6 +118,50 @@ const Wallet = () => {
     getTransactions();
   };
 
+  const handleStopStream = async () => {
+    const stopStreamOperation = await createStopFlowTx(safeAddress, members);
+    await proposeTransaction({
+      to: stopStreamOperation.to,
+      data: stopStreamOperation.data,
+      value: "0",
+      operation: OperationType.Call,
+    });
+    getTransactions();
+  };
+
+  const handleUpdateStream = async () => {
+    const flowrate = calculateFlowRate(
+      ethers.utils.parseUnits((balance / members.length).toString(), 18),
+      days * 86400
+    );
+
+    const updateStreamOperation = await createUpdateFlowTx(
+      safeAddress,
+      members,
+      flowrate
+    );
+    await proposeTransaction({
+      to: updateStreamOperation.to,
+      data: updateStreamOperation.data,
+      value: "0",
+      operation: OperationType.Call,
+    });
+    getTransactions();
+    handleCloseModal();
+  };
+
+  const handleCollect = async () => {
+    const withdrawOperation = await createWithdrawTx(
+      ethers.utils.parseUnits(userBalance.toString(), 18)
+    );
+    console.log(withdrawOperation);
+    // await executeTransactionForEOA(
+    //   withdrawOperation.data,
+    //   withdrawOperation.to
+    // );
+    getTransactions();
+  };
+
   const getBalance = async () => {
     getUSDCBalance(safeAddress).then((balance) =>
       setBalance((balance / 10 ** 18).toFixed(2).toString())
@@ -118,12 +182,18 @@ const Wallet = () => {
             (balance.availableBalance / 10 ** 18).toFixed(6).toString()
           );
         });
+        if (user)
+          getUSDCxBalance(user).then((balance) => {
+            setUserBalance(
+              (balance.availableBalance / 10 ** 18).toFixed(2).toString()
+            );
+          });
       }
     }, 1000);
     return () => {
       clearInterval(intervalId);
     };
-  }, [stream]);
+  }, [stream, user]);
 
   useEffect(() => {
     if (sfLoaded && safeAddress) getBalance();
@@ -264,6 +334,7 @@ const Wallet = () => {
         </div>
       </div>
       <div className={styles.divider} />
+
       <div style={{ display: "flex", flexDirection: "column", gap: "10px 0" }}>
         <Button size="lg" onClick={handleAddFunds}>
           Add
@@ -273,19 +344,94 @@ const Wallet = () => {
           Split
         </Button>
         <Divider />
-        <Button size="lg" onClick={handleStreamFunds}>
-          Stream
-        </Button>
-        <Divider />
         <Button size="lg">Stake</Button>
+        <Divider />
+        <p
+          style={{
+            fontSize: "20px",
+            textAlign: "center",
+            margin: 0,
+            marginTop: "40px",
+            fontWeight: "bold",
+          }}
+        >
+          Powered By
+        </p>
+        <div
+          style={{
+            backgroundImage: `url('https://app.superfluid.finance/gifs/stream-loop.gif')`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% 100%",
+          }}
+        >
+          <img
+            src="https://strapi-website-assets.s3.eu-west-2.amazonaws.com/logo_f7186351bf.svg"
+            alt="SUPERFLUID"
+            style={{ width: "100%", height: "auto", padding: "0 40px" }}
+          />
+        </div>
+        {stream != null ? (
+          <>
+            <Button
+              size="lg"
+              onClick={() => {
+                setShowModal(true);
+              }}
+            >
+              Update Stream
+            </Button>
+            <Divider />
+            <Button size="lg" onClick={handleStopStream}>
+              Stop Stream
+            </Button>
+            <Divider />
+            <Button size="lg" onClick={handleCollect}>
+              Collect ${userBalance}
+            </Button>
+          </>
+        ) : (
+          <Button size="lg" onClick={handleStreamFunds}>
+            Start Stream
+          </Button>
+        )}
+
+        <div
+          id="stripe-root"
+          ref={stripeRootRef}
+          style={{
+            zIndex: 1000,
+          }}
+        ></div>
+        {showModal && (
+          <GenericModal
+            onClose={handleCloseModal}
+            title="Update Stream"
+            body={
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "20px 0",
+                }}
+              >
+                {/* <span className="close" onClick={handleCloseModal}>&times;</span> */}
+                <TextFieldInput
+                  hiddenLabel
+                  placeholder="Enter the number of days you want to complete the stream in"
+                  onChange={(e) => setDays(e.currentTarget.value)}
+                />
+                <Button
+                  size="md"
+                  variant="contained"
+                  onClick={handleUpdateStream}
+                >
+                  Update Stream
+                </Button>
+              </div>
+            }
+          />
+        )}
       </div>
-      <div
-        id="stripe-root"
-        ref={stripeRootRef}
-        style={{
-          zIndex: 1000,
-        }}
-      ></div>
     </div>
   );
 };
