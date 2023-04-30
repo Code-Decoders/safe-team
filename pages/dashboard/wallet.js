@@ -1,7 +1,12 @@
 import { Divider } from "@mui/material";
 import { OperationType } from "@safe-global/safe-core-sdk-types";
 import React, { useEffect } from "react";
-import { Button, Icon, GenericModal, TextFieldInput } from "../../components/GnosisReact";
+import {
+  Button,
+  Icon,
+  GenericModal,
+  TextFieldInput,
+} from "../../components/GnosisReact";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import useRampKit from "../../hooks/useRampKit";
 import useTransaction from "../../hooks/useTransaction";
@@ -9,8 +14,6 @@ import styles from "../../styles/Wallet.module.css";
 import { Polybase } from "@polybase/client";
 import useSuperfluid from "../../hooks/useSuperfluid";
 import { ethers } from "ethers";
-
-
 
 const db = new Polybase({
   defaultNamespace:
@@ -113,11 +116,7 @@ const Wallet = () => {
   };
 
   const handleStopStream = async () => {
-    
-    const stopStreamOperation = await createStopFlowTx(
-      safeAddress,
-      members
-    );
+    const stopStreamOperation = await createStopFlowTx(safeAddress, members);
     await proposeTransaction({
       to: stopStreamOperation.to,
       data: stopStreamOperation.data,
@@ -128,9 +127,11 @@ const Wallet = () => {
   };
 
   const handleUpdateStream = async () => {
+    const flowrate = calculateFlowRate(
+      ethers.utils.parseUnits((balance / members.length).toString(), 18),
+      days * 86400
+    );
 
-    const flowrate = calculateFlowRate(ethers.utils.parseUnits((balance / members.length).toString(), 18), days*86400)
-    
     const updateStreamOperation = await createUpdateFlowTx(
       safeAddress,
       members,
@@ -143,6 +144,7 @@ const Wallet = () => {
       operation: OperationType.Call,
     });
     getTransactions();
+    handleCloseModal();
   };
 
   const getBalance = async () => {
@@ -311,7 +313,6 @@ const Wallet = () => {
         </div>
       </div>
       <div className={styles.divider} />
-      
 
       <div style={{ display: "flex", flexDirection: "column", gap: "10px 0" }}>
         <Button size="lg" onClick={handleAddFunds}>
@@ -320,60 +321,92 @@ const Wallet = () => {
         <Divider />
         <Button size="lg" onClick={handleSplitFunds}>
           Split
-        </Button>    
+        </Button>
         <Divider />
         <Button size="lg">Stake</Button>
         <Divider />
-        <div>      
-        <div style={{ backgroundImage: `url('https://app.superfluid.finance/gifs/stream-loop.gif')`, display: "flex", flexDirection: "row", gap: "20px 0"}}>
-        <p style={{fontSize: "20px", textAlign: "center"}}>Powered By</p>
-        <img src="https://strapi-website-assets.s3.eu-west-2.amazonaws.com/logo_f7186351bf.svg" alt="SUPERFLUID" style={{ width: '100%', height: 'auto' }}/>
+        <p
+          style={{
+            fontSize: "20px",
+            textAlign: "center",
+            margin: 0,
+            marginTop: "40px",
+            fontWeight: "bold",
+          }}
+        >
+          Powered By
+        </p>
+        <div
+          style={{
+            backgroundImage: `url('https://app.superfluid.finance/gifs/stream-loop.gif')`,
+            backgroundRepeat: "no-repeat",
+            backgroundSize: "100% 100%",
+          }}
+        >
+          <img
+            src="https://strapi-website-assets.s3.eu-west-2.amazonaws.com/logo_f7186351bf.svg"
+            alt="SUPERFLUID"
+            style={{ width: "100%", height: "auto", padding: "0 40px" }}
+          />
         </div>
-        {stream !== null ? (
-          <div>            
-          <Button size="lg" onClick={() => {setShowModal(true)}} style={{margin:'10px'}}>
-          Update Stream
+        {stream && (
+          <Button
+            size="lg"
+            onClick={() => {
+              setShowModal(true);
+            }}
+          >
+            Update Stream
           </Button>
-          {showModal && (
+        )}
+        {showModal && (
           <GenericModal
-          onClose={handleCloseModal}
-          title="Update Stream"
-          body={
-            <div
-              style={{ display: "flex", flexDirection: "column", gap: "20px 0" }}
-            >
-              {/* <span className="close" onClick={handleCloseModal}>&times;</span> */}
-              <TextFieldInput
-                hiddenLabel
-                placeholder="Enter the number of days you want to complete the stream in"
-                onChange={(e) => setDays(e.currentTarget.value)}
-              />
-              <Button size="md" variant="contained" onClick={handleUpdateStream}>
-                Update Stream
-              </Button>
-            </div>
-          }
-        />)}
-          <Divider />
-          <Button size="lg" style={{margin:'10px'}} onClick={handleStopStream}>
-          Stop Stream
+            onClose={handleCloseModal}
+            title="Update Stream"
+            body={
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "20px 0",
+                }}
+              >
+                {/* <span className="close" onClick={handleCloseModal}>&times;</span> */}
+                <TextFieldInput
+                  hiddenLabel
+                  placeholder="Enter the number of days you want to complete the stream in"
+                  onChange={(e) => setDays(e.currentTarget.value)}
+                />
+                <Button
+                  size="md"
+                  variant="contained"
+                  onClick={handleUpdateStream}
+                >
+                  Update Stream
+                </Button>
+              </div>
+            }
+          />
+        )}
+        <Divider />
+        {stream !== null ? (
+          <Button size="lg" onClick={handleStopStream}>
+            Stop Stream
           </Button>
-          </div>
         ) : (
           <Button size="lg" onClick={handleStreamFunds}>
             Start Stream
           </Button>
-        )}      
-      </div>
+        )}
 
-      <div
-        id="stripe-root"
-        ref={stripeRootRef}
-        style={{
-          zIndex: 1000,
-        }}
-      ></div>
-    </div>
+        <div
+          id="stripe-root"
+          ref={stripeRootRef}
+          style={{
+            zIndex: 1000,
+          }}
+        ></div>
+      </div>
     </div>
   );
 };
