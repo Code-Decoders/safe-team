@@ -8,6 +8,8 @@ import useTransaction from "../../hooks/useTransaction";
 import styles from "../../styles/Wallet.module.css";
 import { Polybase } from "@polybase/client";
 import useSuperfluid from "../../hooks/useSuperfluid";
+import { ethers } from "ethers";
+
 
 
 const db = new Polybase({
@@ -324,7 +326,7 @@ const Wallet = () => {
         <Divider />
         <div>      
         <div style={{ backgroundImage: `url('https://app.superfluid.finance/gifs/stream-loop.gif')`, display: "flex", flexDirection: "row", gap: "20px 0"}}>
-        <p style={{fontSize: "20px"}}>Powered By </p>
+        <p style={{fontSize: "20px", textAlign: "center"}}>Powered By</p>
         <img src="https://strapi-website-assets.s3.eu-west-2.amazonaws.com/logo_f7186351bf.svg" alt="SUPERFLUID" style={{ width: '100%', height: 'auto' }}/>
         </div>
         {stream !== null ? (
