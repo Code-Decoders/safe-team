@@ -39,6 +39,9 @@ const Wallet = () => {
     createFlowTx,
     createWithdrawTx,
     getStream,
+    createStopFlowTx,
+    createUpdateFlowTx,
+    calculateFlowRate,
   } = useSuperfluid();
 
   const [members, setMembers] = React.useState([]);
@@ -57,7 +60,7 @@ const Wallet = () => {
 
   const [showModal, setShowModal] = React.useState(false);
 
-  const [flowrate, setflowRate] = React.useState(0);
+  const [days, setDays] = React.useState(0);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -101,6 +104,39 @@ const Wallet = () => {
     await proposeTransaction({
       to: createStreamOperation.to,
       data: createStreamOperation.data,
+      value: "0",
+      operation: OperationType.Call,
+    });
+    getTransactions();
+  };
+
+  const handleStopStream = async () => {
+    
+    const stopStreamOperation = await createStopFlowTx(
+      safeAddress,
+      members
+    );
+    await proposeTransaction({
+      to: stopStreamOperation.to,
+      data: stopStreamOperation.data,
+      value: "0",
+      operation: OperationType.Call,
+    });
+    getTransactions();
+  };
+
+  const handleUpdateStream = async () => {
+
+    const flowrate = calculateFlowRate(ethers.utils.parseUnits((balance / members.length).toString(), 18), days*86400)
+    
+    const updateStreamOperation = await createUpdateFlowTx(
+      safeAddress,
+      members,
+      flowrate
+    );
+    await proposeTransaction({
+      to: updateStreamOperation.to,
+      data: updateStreamOperation.data,
       value: "0",
       operation: OperationType.Call,
     });
@@ -293,7 +329,7 @@ const Wallet = () => {
         </div>
         {stream !== null ? (
           <div>            
-          <Button size="lg" onClick={() => setShowModal(true)} style={{margin:'10px'}}>
+          <Button size="lg" onClick={() => {setShowModal(true)}} style={{margin:'10px'}}>
           Update Stream
           </Button>
           {showModal && (
@@ -306,17 +342,17 @@ const Wallet = () => {
               <span className="close" onClick={handleCloseModal}>&times;</span>
               <TextFieldInput
                 hiddenLabel
-                placeholder="Enter the flow-rate you want to change to"
-                onChange={(e) => setflowRate(e.currentTarget.value)}
+                placeholder="Enter the number of days you want to complete the stream in"
+                onChange={(e) => setDays(e.currentTarget.value)}
               />
-              <Button size="md" variant="contained">
+              <Button size="md" variant="contained" onClick={handleUpdateStream}>
                 Update Stream
               </Button>
             </div>
           }
         />)}
           <Divider />
-          <Button size="lg" style={{margin:'10px'}}>
+          <Button size="lg" style={{margin:'10px'}} onClick={handleStopStream}>
           Stop Stream
           </Button>
           </div>
@@ -334,6 +370,7 @@ const Wallet = () => {
           zIndex: 1000,
         }}
       ></div>
+    </div>
     </div>
   );
 };

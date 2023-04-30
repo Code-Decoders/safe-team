@@ -28,8 +28,8 @@ const useSuperfluid = () => {
     return { sf, superSigner };
   }
 
-  const calculateFlowRate = (amount) => {
-    let fr = amount / (86400 * 30);
+  const calculateFlowRate = (amount, seconds = 2592000) => { //seconds = 2592000
+    let fr = amount / seconds;
     return Math.floor(fr);
   };
 
