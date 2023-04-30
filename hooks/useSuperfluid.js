@@ -112,7 +112,13 @@ const useSuperfluid = () => {
       });
       txs.push(deleteFlowOperation);
     }
+    const balance = await getUSDCxBalance(from);
+    console.log(balance.availableBalance);
+    const downgradeOperation = fUSDCx.downgrade({
+      amount: balance.availableBalance,
+    });
 
+    txs.push(downgradeOperation);
     const ops = await Promise.all(
       sf.batchCall(txs).getOperationStructArrayPromises
     );
@@ -127,6 +133,9 @@ const useSuperfluid = () => {
     const downgradeOperation = fUSDCx.contract
       .connect(signer)
       .downgrade(amount);
+    // const downgradeOperation = fUSDCx.downgrade({
+    //   amount: amount,
+    // });
 
     // return await downgradeOperation.populateTransactionPromise;
   };

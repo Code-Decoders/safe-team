@@ -213,21 +213,18 @@ const useTransaction = () => {
   };
 
   const executeTransactionForEOA = async (calldata, target) => {
-    const relay = new GelatoRelay();
-
-    const request = {
+    const relayTransaction = {
+      target: target,
+      encodedTransaction: calldata,
       chainId,
-      target,
-      data: calldata,
+      options,
     };
 
-    const relayResponse = await relay.sponsoredCall(
-      request,
-      process.env.NEXT_PUBLIC_GELATO_RELAY_API_KEY
-    );
+    console.log(relayTransaction);
+    const response = await relayAdapter.relayTransaction(relayTransaction);
 
     console.log(
-      `Relay Transaction Task ID: https://relay.gelato.digital/tasks/status/${relayResponse.taskId}`
+      `Relay Transaction Task ID: https://relay.gelato.digital/tasks/status/${response.taskId}`
     );
   };
   return {
