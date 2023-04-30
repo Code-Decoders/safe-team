@@ -1,13 +1,14 @@
 import { Divider } from "@mui/material";
 import { OperationType } from "@safe-global/safe-core-sdk-types";
 import React, { useEffect } from "react";
-import { Button, Icon } from "../../components/GnosisReact";
+import { Button, Icon, GenericModal, TextFieldInput } from "../../components/GnosisReact";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import useRampKit from "../../hooks/useRampKit";
 import useTransaction from "../../hooks/useTransaction";
 import styles from "../../styles/Wallet.module.css";
 import { Polybase } from "@polybase/client";
 import useSuperfluid from "../../hooks/useSuperfluid";
+
 
 const db = new Polybase({
   defaultNamespace:
@@ -54,9 +55,9 @@ const Wallet = () => {
 
   const [stream, setStream] = React.useState(null);
 
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = React.useState(false);
 
-  const [flowrate, setflowRate] = useState(0);
+  const [flowrate, setflowRate] = React.useState(0);
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -285,9 +286,14 @@ const Wallet = () => {
         <Divider />
         <Button size="lg">Stake</Button>
         <Divider />
+        <div>      
+        <div style={{ backgroundImage: `url('https://app.superfluid.finance/gifs/stream-loop.gif')`, display: "flex", flexDirection: "row", gap: "20px 0"}}>
+        <p style={{fontSize: "20px"}}>Powered By </p>
+        <img src="https://strapi-website-assets.s3.eu-west-2.amazonaws.com/logo_f7186351bf.svg" alt="SUPERFLUID" style={{ width: '100%', height: 'auto' }}/>
+        </div>
         {stream !== null ? (
           <div>            
-          <Button size="lg" onClick={() => setShowModal(true)} style={{padding:'10px'}}>
+          <Button size="lg" onClick={() => setShowModal(true)} style={{margin:'10px'}}>
           Update Stream
           </Button>
           {showModal && (
@@ -310,7 +316,7 @@ const Wallet = () => {
           }
         />)}
           <Divider />
-          <Button size="lg" style={{padding:'10px'}}>
+          <Button size="lg" style={{margin:'10px'}}>
           Stop Stream
           </Button>
           </div>
