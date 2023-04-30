@@ -13,12 +13,12 @@
 
 - Multi-signature wallet functionality for enhanced security.
 - User-friendly interface for easy use.
+- **Stream money evenly between all memebers using SuperFluid.**
 - Gas-Less Transactions using Gelato Relayer via Relay Kit.
 - Sign In using socials using Web3Auth via Auth Kit.
 - Add funds using your Credit-Card using the Stripe SDK via On-Ramp kit.
 - Integration with the Safe Core SDK for improved account abstraction.
 - Support for various cryptocurrencies, including Ether and ERC-20 tokens.
-- Stream money evenly between all memebers using SuperFluid.
 - Every team member needs to approve the transaction in order for it to execute.
 - Transaction history and notification system for easy tracking of funds.
 - Gnosis Multi Send transactions implemented. 
@@ -29,7 +29,7 @@ Live Website (https://safeteam.netlify.app/)
 
 Youtube Video Demo
 
-[![Youtube Video](https://img.youtube.com/vi/82I3SUHx2EE/sddefault.jpg)](https://youtu.be/82I3SUHx2EE)
+[![Youtube Video](https://img.youtube.com/vi/f7KOdOTYDXY/sddefault.jpg)](https://youtu.be/f7KOdOTYDXY)
 
 
 
@@ -44,7 +44,7 @@ Youtube Video Demo
 - [x]  Gasless Transactions
 - [x]  Add funds using Credit Card
 - [x]  Split Funds evenly on one click
-- [ ]  Stream Funds to all team members
+- [x]  **Stream Funds to all team members**
 - [ ]  Option to stake funds
 - [ ]  Gasless Creation of Safes
 - [ ]  Multi Chain support
