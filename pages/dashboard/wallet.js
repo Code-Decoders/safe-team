@@ -334,12 +334,13 @@ const Wallet = () => {
           </Button>
           {showModal && (
           <GenericModal
+          onClose={handleCloseModal}
           title="Update Stream"
           body={
             <div
               style={{ display: "flex", flexDirection: "column", gap: "20px 0" }}
             >
-              <span className="close" onClick={handleCloseModal}>&times;</span>
+              {/* <span className="close" onClick={handleCloseModal}>&times;</span> */}
               <TextFieldInput
                 hiddenLabel
                 placeholder="Enter the number of days you want to complete the stream in"
