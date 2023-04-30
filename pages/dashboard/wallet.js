@@ -151,10 +151,13 @@ const Wallet = () => {
   };
 
   const handleCollect = async () => {
+    const userBalance = await getUSDCxBalance(user);
     const withdrawOperation = await createWithdrawTx(
-      ethers.utils.parseUnits(userBalance.toString(), 18)
+      userBalance.availableBalance
     );
-    console.log(withdrawOperation);
+    // console.log(userBalance.availableBalance);
+    // console.log(withdrawOperation.data);
+    // console.log(withdrawOperation.to);
     // await executeTransactionForEOA(
     //   withdrawOperation.data,
     //   withdrawOperation.to
@@ -188,12 +191,23 @@ const Wallet = () => {
               (balance.availableBalance / 10 ** 18).toFixed(2).toString()
             );
           });
+      } else {
+        if (sfLoaded && safeAddress && user)
+          getUSDCBalance(safeAddress).then((balance) =>
+            setBalance((balance / 10 ** 18).toFixed(2).toString())
+          );
+        getUSDCxBalance(user).then((balance) => {
+          if (balance)
+            setUserBalance(
+              (balance.availableBalance / 10 ** 18).toFixed(2).toString()
+            );
+        });
       }
     }, 1000);
     return () => {
       clearInterval(intervalId);
     };
-  }, [stream, user]);
+  }, [stream, user, sfLoaded, safeAddress]);
 
   useEffect(() => {
     if (sfLoaded && safeAddress) getBalance();
@@ -384,15 +398,20 @@ const Wallet = () => {
             <Button size="lg" onClick={handleStopStream}>
               Stop Stream
             </Button>
-            <Divider />
-            <Button size="lg" onClick={handleCollect}>
-              Collect ${userBalance}
-            </Button>
           </>
         ) : (
           <Button size="lg" onClick={handleStreamFunds}>
             Start Stream
           </Button>
+        )}
+
+        {userBalance != null && parseFloat(userBalance) != 0 && (
+          <>
+            <Divider />
+            <Button size="lg" onClick={handleCollect}>
+              Collect ${userBalance}
+            </Button>
+          </>
         )}
 
         <div
