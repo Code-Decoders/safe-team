@@ -61,7 +61,7 @@ Clone the project
 Go to the project directory
 
 ```bash
-  cd sasfe-team
+  cd safe-team
 ```
 
 Install dependencies
