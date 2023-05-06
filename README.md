@@ -8,6 +8,14 @@
 > By using SafeTeam, you can secure your cryptocurrency funds and have peace of mind knowing that your private keys are safe and accessible.
 
 [Dora Hacks BUIDL Submission](https://dorahacks.io/buidl/4765)
+
+## Inspiration
+
+> The idea of SuperFluid & real-time finance seemed fascinating to us, imagine being able to get paid continuously as you work on a project as a part of a grant, accelerator or hackathon, how cool is that!SafeTeam 2.0 is a customisable treasury management tool made possible with the help of Safe Wallet & Superfluid!
+
+> We used all the features of Superfluid - upgrade to and downgrade from Super Tokens, do Money Streaming(CFA) & Distributions(IDA) and making Batch Calls.
+
+> SafeTeam is a product that we wish existed in the market as both hackathon-winners and grant-receivers ourselves. Inspiration for this project came from our personal struggles, where we faced the issues of money won/earned during hackathons, grant programs, venture funding of any kind, was in the control of one of the members of the team and was given as a lump sum.
  
 ## Features
 
