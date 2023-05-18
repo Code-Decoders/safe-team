@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  GenericModal,
-  Button,
-  Dropdown,
-  Input,
-  TextFieldInput,
-  Select,
-} from "../GnosisReact";
+import { GenericModal, Button, TextFieldInput, Select } from "../GnosisReact";
 
 import filecoin from "../../assets/filecoin.png";
 import avalanche from "../../assets/avalanche.png";
@@ -14,7 +7,7 @@ import polygon from "../../assets/polygon.png";
 import ethereum from "../../assets/ethereum.png";
 
 const PayoutForm = ({ handleCloseModal }) => {
-  const [network, setNetwork] = useState("Filecoin");
+  const [network, setNetwork] = useState("Avalanche");
   const [amount, setAmount] = useState("");
 
   const handleNetworkChange = (e) => {
@@ -51,6 +44,10 @@ const PayoutForm = ({ handleCloseModal }) => {
               label="Select Network"
               name="network-select"
               fullWidth
+              error={network != "Avalanche"}
+              helperText={
+                network != "Avalanche" && "Network not supported yet."
+              }
               value={network}
               items={[
                 {
