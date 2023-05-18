@@ -8,14 +8,13 @@ import {
   TextFieldInput,
 } from "../../components/GnosisReact";
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import { PayoutForm } from "../../components/modals/PayoutForm";
+import PayoutForm from "../../components/modals/PayoutForm";
 import useRampKit from "../../hooks/useRampKit";
 import useTransaction from "../../hooks/useTransaction";
 import styles from "../../styles/Wallet.module.css";
 import { Polybase } from "@polybase/client";
 import useSuperfluid from "../../hooks/useSuperfluid";
 import { ethers } from "ethers";
-
 
 const db = new Polybase({
   defaultNamespace:
@@ -24,6 +23,7 @@ const db = new Polybase({
 
 const Sponsor = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   return (
     <div className={styles.container}>
       <div style={{ flex: 1 }}>
@@ -51,18 +51,26 @@ const Sponsor = () => {
               style={{ width: "130px", display: "flex", gap: "0 10px" }}
               onClick={() => {}}
             >
-              {/* <Button
+              <Button
                 size="md"
                 variant="contained"
-                onClick={() => setIsButtonDisabled(false)}
+                onClick={() => setShowModal(true)}
               >
                 Pay
-              </Button> */}
-              <PayoutForm size="md" variant="contained"/>
+              </Button>
             </div>
           </div>
         </div>
       </div>
+      {showModal && (
+        <PayoutForm
+          size="md"
+          variant="contained"
+          handleCloseModal={() => {
+            setShowModal(false);
+          }}
+        />
+      )}
     </div>
   );
 };
