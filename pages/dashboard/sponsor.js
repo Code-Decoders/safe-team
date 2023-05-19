@@ -14,6 +14,7 @@ import styles from "../../styles/Wallet.module.css";
 import { Polybase } from "@polybase/client";
 import useSuperfluid from "../../hooks/useSuperfluid";
 import { ethers } from "ethers";
+import useCCTP from "../../hooks/useCCTP";
 
 const db = new Polybase({
   defaultNamespace:
@@ -23,24 +24,24 @@ const db = new Polybase({
 const Sponsor = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const { safeAuth, switchChain } = useAuthKit();
+  const { executeTransfer } = useCCTP();
 
-  useEffect(() => {
-    if (safeAuth) {
-      getData();
-    }
-  }, [safeAuth]);
+  // useEffect(() => {
+  //   if (safeAuth) {
+  //     getData();
+  //   }
+  // }, [safeAuth]);
 
-  const getData = async () => {
-    const signInInfo = await safeAuth.signIn();
-    console.log(signInInfo);
-    const provider = new ethers.providers.Web3Provider(
-      await safeAuth.getProvider()
-    );
-    const balance = await provider.getBalance(signInInfo.eoa);
-    const chainId = await provider.getNetwork().then((res) => res.chainId);
-    console.log("BALANCE", balance.toString(), "\nCHAIN ID", chainId);
-  };
+  // const getData = async () => {
+  //   const signInInfo = await safeAuth.signIn();
+  //   console.log(signInInfo);
+  //   const provider = new ethers.providers.Web3Provider(
+  //     await safeAuth.getProvider()
+  //   );
+  //   const balance = await provider.getBalance(signInInfo.eoa);
+  //   const chainId = await provider.getNetwork().then((res) => res.chainId);
+  //   console.log("BALANCE", balance.toString(), "\nCHAIN ID", chainId);
+  // };
 
   return (
     <div className={styles.container}>
@@ -72,8 +73,7 @@ const Sponsor = () => {
               <Button
                 size="md"
                 variant="contained"
-                // onClick={() => setShowModal(true)}
-                onClick={() => switchChain()}
+                onClick={() => setShowModal(true)}
               >
                 Pay
               </Button>
@@ -85,6 +85,15 @@ const Sponsor = () => {
         <PayoutForm
           size="md"
           variant="contained"
+          onSubmit={async (amount) => {
+            console.log("Submitting payout");
+
+            await executeTransfer({
+              amount,
+              // todo: get this from the list of eligible teams
+              destionationAddress: "0xf80F2427448c2E136F8bC608f02e0625ce5c9646",
+            });
+          }}
           handleCloseModal={() => {
             setShowModal(false);
           }}

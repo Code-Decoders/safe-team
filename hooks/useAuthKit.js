@@ -55,22 +55,20 @@ const useAuthKit = () => {
     })();
   }, []);
 
-  const switchChain = async () => {
+  const switchChain = async (chain) => {
     setLoading(true);
-    // await safeAuth.signOut();
     const options = {
       clientId: process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID,
       web3AuthNetwork: "testnet",
       chainConfig: {
         chainNamespace: "eip155",
-        ...config.netowrks.avalanche,
+        ...config.netowrks[chain],
       },
       uiConfig: {
         theme: "dark",
         loginMethodsOrder: ["google", "facebook"],
       },
     };
-
 
     const web3AuthModalPack = new Web3AuthModalPack(options, [], modalConfig);
 

@@ -6,7 +6,7 @@ import avalanche from "../../assets/avalanche.png";
 import polygon from "../../assets/polygon.png";
 import ethereum from "../../assets/ethereum.png";
 
-const PayoutForm = ({ handleCloseModal }) => {
+const PayoutForm = ({ handleCloseModal, onSubmit }) => {
   const [network, setNetwork] = useState("Avalanche");
   const [amount, setAmount] = useState("");
 
@@ -18,8 +18,9 @@ const PayoutForm = ({ handleCloseModal }) => {
     setAmount(e.target.value);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("Submitting payout to:", network, amount);
+    await onSubmit(parseInt(amount));
     handleCloseModal();
   };
 
@@ -92,7 +93,7 @@ const PayoutForm = ({ handleCloseModal }) => {
               placeholder="USDC"
               type="number"
               id="amount"
-              size="md"
+              size="medium"
               onChange={handleAmountChange}
             />
           </div>
