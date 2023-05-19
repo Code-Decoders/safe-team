@@ -9,8 +9,7 @@ import {
 } from "../../components/GnosisReact";
 import DashboardLayout from "../../components/layout/DashboardLayout";
 import PayoutForm from "../../components/modals/PayoutForm";
-import useRampKit from "../../hooks/useRampKit";
-import useTransaction from "../../hooks/useTransaction";
+import useAuthKit from "../../hooks/useAuthKit";
 import styles from "../../styles/Wallet.module.css";
 import { Polybase } from "@polybase/client";
 import useSuperfluid from "../../hooks/useSuperfluid";
@@ -24,6 +23,25 @@ const db = new Polybase({
 const Sponsor = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const { safeAuth, switchChain } = useAuthKit();
+
+  useEffect(() => {
+    if (safeAuth) {
+      getData();
+    }
+  }, [safeAuth]);
+
+  const getData = async () => {
+    const signInInfo = await safeAuth.signIn();
+    console.log(signInInfo);
+    const provider = new ethers.providers.Web3Provider(
+      await safeAuth.getProvider()
+    );
+    const balance = await provider.getBalance(signInInfo.eoa);
+    const chainId = await provider.getNetwork().then((res) => res.chainId);
+    console.log("BALANCE", balance.toString(), "\nCHAIN ID", chainId);
+  };
+
   return (
     <div className={styles.container}>
       <div style={{ flex: 1 }}>
@@ -54,7 +72,8 @@ const Sponsor = () => {
               <Button
                 size="md"
                 variant="contained"
-                onClick={() => setShowModal(true)}
+                // onClick={() => setShowModal(true)}
+                onClick={() => switchChain()}
               >
                 Pay
               </Button>

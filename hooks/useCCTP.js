@@ -5,7 +5,6 @@ const useCCTP = () => {
 
   async function init(signer) {
     const provider = signer.provider;
-    setSF(sf);
   }
   return {};
 };
