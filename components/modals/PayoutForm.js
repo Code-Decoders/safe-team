@@ -5,6 +5,7 @@ import filecoin from "../../assets/filecoin.png";
 import avalanche from "../../assets/avalanche.png";
 import polygon from "../../assets/polygon.png";
 import ethereum from "../../assets/ethereum.png";
+import circle from "../../assets/circle.svg";
 
 const PayoutForm = ({ handleCloseModal, onSubmit }) => {
   const [network, setNetwork] = useState("Avalanche");
@@ -24,6 +25,7 @@ const PayoutForm = ({ handleCloseModal, onSubmit }) => {
     handleCloseModal();
   };
 
+  console.log("Circle", circle)
   return (
     <GenericModal
       isOpen={true}
@@ -101,6 +103,12 @@ const PayoutForm = ({ handleCloseModal, onSubmit }) => {
             <Button size="md" onClick={handleSubmit}>
               Submit
             </Button>
+          </div>
+          <div style={{ textAlign: "right", marginTop: "10px" }}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <span>Powered By</span>
+              <img src={circle.src} width="100" height="auto" />
+            </div>
           </div>
         </>
       }

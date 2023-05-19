@@ -25,6 +25,7 @@ const Sponsor = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const { executeTransfer } = useCCTP();
+  
 
   // useEffect(() => {
   //   if (safeAuth) {
