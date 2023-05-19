@@ -7,7 +7,7 @@ import polygon from "../../assets/polygon.png";
 import ethereum from "../../assets/ethereum.png";
 import circle from "../../assets/circle.svg";
 
-const PayoutForm = ({ handleCloseModal, onSubmit }) => {
+const PayoutForm = ({ handleCloseModal, onSubmit, teamName }) => {
   const [network, setNetwork] = useState("Avalanche");
   const [amount, setAmount] = useState("");
 
@@ -30,7 +30,7 @@ const PayoutForm = ({ handleCloseModal, onSubmit }) => {
     <GenericModal
       isOpen={true}
       onClose={handleCloseModal}
-      title={"Payout to: Team Name"}
+      title={`Payout to: ${teamName}`}
       body={
         <>
           <div

@@ -25,7 +25,28 @@ const Sponsor = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const { executeTransfer } = useCCTP();
+
+  const [teams, setTeams] = useState([]);
+  const [selectedTeam, setSelectedTeam] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = [];
+      const records = await db.collection("Team").get();  // assuming `.next()` gets the next record
+      
+      // while (record) {
+      //   result.push(record);
+      //   record = await db.collection("Team").next();
+      // }
+
+      console.log("Records", records)
   
+      setTeams(records.data);
+    };
+    
+    fetchData();
+  }, []);
+
 
   // useEffect(() => {
   //   if (safeAuth) {
@@ -58,13 +79,14 @@ const Sponsor = () => {
             <div className={styles.tableDivider} />
             <div style={{ width: "130px" }}>Actions</div>
           </div>
-          <div className={styles.transactionMemberTable}>
-            <div style={{ width: "100px" }}>1</div>
+          {teams.map((team, index) => (
+          <div key={team.id} className={styles.transactionMemberTable}>
+            <div style={{ width: "100px" }}>{index + 1}</div>
             <div className={styles.tableDivider} />
-            <div style={{ width: "200px" }}>abcd</div>
+            <div style={{ width: "200px" }}>{team.data.name}</div>
             <div className={styles.tableDivider} />
             <div style={{ flex: 1 }}>
-              0x4345dd3bf7c66f71f86b026336cc6c091730e0f4
+            {team.data.safew}
             </div>
             <div className={styles.tableDivider} />
             <div
@@ -74,15 +96,16 @@ const Sponsor = () => {
               <Button
                 size="md"
                 variant="contained"
-                onClick={() => setShowModal(true)}
+                onClick={() => {setShowModal(true); setSelectedTeam(team);}}
               >
                 Pay
               </Button>
             </div>
           </div>
+          ))}
         </div>
       </div>
-      {showModal && (
+      {showModal && selectedTeam && (
         <PayoutForm
           size="md"
           variant="contained"
@@ -92,12 +115,13 @@ const Sponsor = () => {
             await executeTransfer({
               amount,
               // todo: get this from the list of eligible teams
-              destionationAddress: "0xf80F2427448c2E136F8bC608f02e0625ce5c9646",
+              destionationAddress: selectedTeam.data.safew,
             });
           }}
           handleCloseModal={() => {
             setShowModal(false);
           }}
+          teamName={selectedTeam.data.name}
         />
       )}
     </div>
