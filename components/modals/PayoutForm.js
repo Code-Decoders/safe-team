@@ -21,7 +21,7 @@ const PayoutForm = ({ handleCloseModal, onSubmit, teamName }) => {
 
   const handleSubmit = async () => {
     console.log("Submitting payout to:", network, amount);
-    await onSubmit(parseInt(amount));
+    await onSubmit(amount);
     handleCloseModal();
   };
 

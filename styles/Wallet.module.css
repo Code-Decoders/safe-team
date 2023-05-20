@@ -73,6 +73,6 @@
 }
 
 .tableContainer {
-    max-height: 650px;  /* Adjust this value to your needs */
+    max-height: 600px;  /* Adjust this value to your needs */
     overflow-y: auto;
   }
