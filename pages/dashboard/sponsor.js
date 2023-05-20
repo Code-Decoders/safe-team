@@ -79,6 +79,7 @@ const Sponsor = () => {
             <div className={styles.tableDivider} />
             <div style={{ width: "130px" }}>Actions</div>
           </div>
+          <div className={styles.tableContainer}>
           {teams.map((team, index) => (
           <div key={team.id} className={styles.transactionMemberTable}>
             <div style={{ width: "100px" }}>{index + 1}</div>
@@ -103,6 +104,7 @@ const Sponsor = () => {
             </div>
           </div>
           ))}
+          </div>
         </div>
       </div>
       {showModal && selectedTeam && (
@@ -111,10 +113,11 @@ const Sponsor = () => {
           variant="contained"
           onSubmit={async (amount) => {
             console.log("Submitting payout");
+            const amountInWei = ethers.utils.parseUnits(amount, 6);
 
             await executeTransfer({
               amount,
-              // todo: get this from the list of eligible teams
+              amount: amountInWei,
               destionationAddress: selectedTeam.data.safew,
             });
           }}

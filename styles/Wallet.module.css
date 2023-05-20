@@ -71,3 +71,8 @@
     border-radius: 0 0 5px 5px;
 
 }
+
+.tableContainer {
+    max-height: 650px;  /* Adjust this value to your needs */
+    overflow-y: auto;
+  }

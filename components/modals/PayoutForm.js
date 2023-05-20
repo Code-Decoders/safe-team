@@ -5,7 +5,7 @@ import filecoin from "../../assets/filecoin.png";
 import avalanche from "../../assets/avalanche.png";
 import polygon from "../../assets/polygon.png";
 import ethereum from "../../assets/ethereum.png";
-import circle from "../../assets/circle.svg";
+import circle from "../../assets/circle-dark.svg";
 
 const PayoutForm = ({ handleCloseModal, onSubmit, teamName }) => {
   const [network, setNetwork] = useState("Avalanche");
