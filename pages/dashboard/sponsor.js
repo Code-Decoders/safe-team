@@ -31,17 +31,13 @@ const Sponsor = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const result = [];
-      const records = await db.collection("Team").get();  // assuming `.next()` gets the next record
-      
-      // while (record) {
-      //   result.push(record);
-      //   record = await db.collection("Team").next();
-      // }
-
+      let result = [];
+      const records = await db.collection("Team").get(); 
       console.log("Records", records)
-  
-      setTeams(records.data);
+      result = records.data;
+      result = result.filter((team) => team.data.name == "CodeDecoders" || team.data.name == "Nova" || team.data.name == "test20");
+      //setTeams(records.data);
+      setTeams(result);
     };
     
     fetchData();

@@ -10,12 +10,12 @@ const Navbar = () => {
 
     return (
         <div className={styles.container}>
-            <Identicon address="0x4FD3d5db6691c94DBe26302A1b49dE25410bCCb5" className={styles.avatar} />
+            <Identicon address="0xF96b7fFd86d10106e986DdAfaefb02c6ef4424dd" className={styles.avatar} />
             <EthHashInfo
                 shortName="matic"
-                hash={"0x4FD3d5db6691c94DBe26302A1b49dE25410bCCb5"}
+                hash={"0xF96b7fFd86d10106e986DdAfaefb02c6ef4424dd"}
                 showCopyBtn
-                explorerUrl={() => ({ url: 'https://explorer-mumbai.maticvigil.com/address/0x4FD3d5db6691c94DBe26302A1b49dE25410bCCb5', name: 'Matic' })}
+                explorerUrl={() => ({ url: 'https://explorer-mumbai.maticvigil.com/address/0xF96b7fFd86d10106e986DdAfaefb02c6ef4424dd', name: 'Matic' })}
                 shortenHash={4}
                 className={styles.ethHashInfo}
             />
