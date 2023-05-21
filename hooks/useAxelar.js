@@ -11,11 +11,11 @@ import useAuthKit from "./useAuthKit";
 
 import usdcAbi from "../abis/axelar/usdc.json";
 import fvmAbi from "../abis/axelar/fvm.json";
-import ethAbi from "../abis/axelar/eth.json";
+//import ethAbi from "../abis/axelar/eth.json";
 
 const FVM_USDC_ADDRESS = "0x40721AE051B1D20c12038d7c408454B3Ca310Ea1";
 const FVM_CONTRACT_ADDRESS = "0xb7ff4e2dbe970f94ca08083db9cb073266e3c357";
-const ETH_USDC_ADDRESS = "0x220BdcCa5adA47b0c7d2723355161611411Bd834";
+//const ETH_USDC_ADDRESS = "0x220BdcCa5adA47b0c7d2723355161611411Bd834";
 const ETH_CONTRACT_ADDRESS = "0x0aC2C6391264Fb640266567E17F1A6fE4242e1D5";
 const api = new AxelarQueryAPI({ environment: Environment.TESTNET });
 const sdk = new AxelarGMPRecoveryAPI({
@@ -32,7 +32,7 @@ const useAxelar = () => {
 
   async function execute({amount, reciever}) {
     await safeAuth.signIn();
-    await switchChain("avalanche");
+    await switchChain("filecoin");
 
     let provider = new ethers.providers.Web3Provider(
       await safeAuth.getProvider()
