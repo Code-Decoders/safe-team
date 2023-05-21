@@ -5,10 +5,12 @@ import filecoin from "../../assets/filecoin.png";
 import avalanche from "../../assets/avalanche.png";
 import polygon from "../../assets/polygon.png";
 import ethereum from "../../assets/ethereum.png";
+import axelar from "../../assets/axelar.svg";
 import circle from "../../assets/circle-dark.svg";
 
+
 const PayoutForm = ({ handleCloseModal, onSubmit, teamName }) => {
-  const [network, setNetwork] = useState("Avalanche");
+  const [network, setNetwork] = useState("Filecoin");
   const [amount, setAmount] = useState("");
 
   const handleNetworkChange = (e) => {
@@ -25,7 +27,6 @@ const PayoutForm = ({ handleCloseModal, onSubmit, teamName }) => {
     handleCloseModal();
   };
 
-  console.log("Circle", circle)
   return (
     <GenericModal
       isOpen={true}
@@ -47,9 +48,9 @@ const PayoutForm = ({ handleCloseModal, onSubmit, teamName }) => {
               label="Select Network"
               name="network-select"
               fullWidth
-              error={network != "Avalanche"}
+              error={network != "Filecoin"}
               helperText={
-                network != "Avalanche" && "Network not supported yet."
+                network != "Filecoin" && "Network not supported yet."
               }
               value={network}
               items={[
@@ -107,7 +108,7 @@ const PayoutForm = ({ handleCloseModal, onSubmit, teamName }) => {
           <div style={{ textAlign: "right", marginTop: "10px" }}>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
               <span>Powered By</span>
-              <img src={circle.src} width="100" height="auto" />
+              <img src={axelar.src} width="100" height="auto" />
             </div>
           </div>
         </>

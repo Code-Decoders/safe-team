@@ -12,9 +12,8 @@ import PayoutForm from "../../components/modals/PayoutForm";
 import useAuthKit from "../../hooks/useAuthKit";
 import styles from "../../styles/Wallet.module.css";
 import { Polybase } from "@polybase/client";
-import useSuperfluid from "../../hooks/useSuperfluid";
 import { ethers } from "ethers";
-import useCCTP from "../../hooks/useCCTP";
+import useAxelar from "../../hooks/useAxelar";
 
 const db = new Polybase({
   defaultNamespace:
@@ -24,7 +23,7 @@ const db = new Polybase({
 const Sponsor = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [showModal, setShowModal] = useState(false);
-  const { executeTransfer } = useCCTP();
+  const { execute } = useAxelar();
 
   const [teams, setTeams] = useState([]);
   const [selectedTeam, setSelectedTeam] = useState(null);
@@ -110,11 +109,10 @@ const Sponsor = () => {
           onSubmit={async (amount) => {
             console.log("Submitting payout");
             const amountInWei = ethers.utils.parseUnits(amount, 6);
-
-            await executeTransfer({
-              amount,
+            console.log(`Amount: ${amountInWei}, Receiver: ${selectedTeam.data.safew}`);
+            await execute({
               amount: amountInWei,
-              destionationAddress: selectedTeam.data.safew,
+              receiver: selectedTeam.data.safew,
             });
           }}
           handleCloseModal={() => {

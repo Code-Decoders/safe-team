@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@axelar-network/axelarjs-sdk": "0.12.7-alpha.6",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@gelatonetwork/gasless-wallet": "^0.0.3",
