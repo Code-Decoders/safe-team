@@ -1,27 +1,24 @@
-
 # SafeTeam
 
 ![Logo](https://i.imgur.com/TSh8KKs.png)
+
 > SafeTeam is a secure and user-friendly platform for managing cryptocurrency wallets.
 > It eliminates the need for trust by using a multi-sig wallet and account abstraction.
 > SafeTeam leverages the power of the Safe Core SDK to provide a solution for the problem of lost private keys and unsecure EOA wallets.
 > By using SafeTeam, you can secure your cryptocurrency funds and have peace of mind knowing that your private keys are safe and accessible.
 
-[Dora Hacks BUIDL Submission](https://dorahacks.io/buidl/4765)
-
 ## Inspiration
 
-> The idea of SuperFluid & real-time finance seemed fascinating to us, imagine being able to get paid continuously as you work on a project as a part of a grant, accelerator or hackathon, how cool is that!SafeTeam 2.0 is a customisable treasury management tool made possible with the help of Safe Wallet & Superfluid!
+> Safe{Team} isn't just another project. It's the culmination of our shared experiences, sleepless nights, and relentless pursuit of excellence. It's our vision of what treasury and asset management in the Web3 world should look like - innovative, intuitive, secure, and heck, even fun!
 
-> We used all the features of Superfluid - upgrade to and downgrade from Super Tokens, do Money Streaming(CFA) & Distributions(IDA) and making Batch Calls.
+> The crown jewel of our project, developed during this hackathon, is our implementation of Circle's Cross-Chain Transfer Protocol (CCTP). With this feature, protocols across multiple blockchains can transfer funds to the winning teams on the chain of their choice - be it Ethereum, Avalanche, or any other. Safe{Team} takes care of all the bridging and transferring in the backend, allowing sponsors to send prizes seamlessly, and recipients to enjoy the convenience of receiving funds directly on their preferred blockchain.
 
-> SafeTeam is a product that we wish existed in the market as both hackathon-winners and grant-receivers ourselves. Inspiration for this project came from our personal struggles, where we faced the issues of money won/earned during hackathons, grant programs, venture funding of any kind, was in the control of one of the members of the team and was given as a lump sum.
- 
 ## Features
 
 - Multi-signature wallet functionality for enhanced security.
 - User-friendly interface for easy use.
-- **Stream money evenly between all memebers using SuperFluid.**
+- **Cross-Chain Transfers using Circle's CCTP**
+- Stream money evenly between all memebers using SuperFluid.
 - Gas-Less Transactions using Gelato Relayer via Relay Kit.
 - Sign In using socials using Web3Auth via Auth Kit.
 - Add funds using your Credit-Card using the Stripe SDK via On-Ramp kit.
@@ -29,34 +26,32 @@
 - Support for various cryptocurrencies, including Ether and ERC-20 tokens.
 - Every team member needs to approve the transaction in order for it to execute.
 - Transaction history and notification system for easy tracking of funds.
-- Gnosis Multi Send transactions implemented. 
+- Gnosis Multi Send transactions implemented.
 
 ## Demo
 
-Live Website (https://safeteam.netlify.app/)
+Live Website (https://safeteam-cctp.netlify.app/)
 
 Youtube Video Demo
 
-[![Youtube Video](https://img.youtube.com/vi/f7KOdOTYDXY/sddefault.jpg)](https://youtu.be/f7KOdOTYDXY)
-
-
+[![Youtube Video](https://img.youtube.com/vi/hGNM406xTCk/sddefault.jpg)](https://youtu.be/hGNM406xTCk)
 
 ## Tech Stack
 
 **Frontend:** NEXT.JS, ethers.js, Web3Auth
 
-**Backend:** PolyBase, Safe Core SDK, Gelato, Base Testnet, Stripe SDK (onramp kit)
+**Backend:** Circle CCTP PolyBase, Safe Core SDK, Gelato, Ethereum, Avalanche, Stripe SDK (onramp kit)
+
 ## Roadmap
 
-- [x]  Social Logins
-- [x]  Gasless Transactions
-- [x]  Add funds using Credit Card
-- [x]  Split Funds evenly on one click
-- [x]  **Stream Funds to all team members**
-- [ ]  Option to stake funds
-- [ ]  Gasless Creation of Safes
-- [ ]  Multi Chain support
-- [ ]  Pitch the product to various Hackathon Platforms
+- [x] Social Logins
+- [x] Gasless Transactions
+- [x] Add funds using Credit Card
+- [x] Split Funds evenly on one click
+- [x] Stream Funds to all team members
+- [x] **Multi Chain support using CCTP bridging**
+- [ ] Option to stake funds
+- [ ] Pitch the product to various Hackathon Platforms
 
 ## Run Locally
 
@@ -64,6 +59,12 @@ Clone the project
 
 ```bash
   git clone https://github.com/Code-Decoders/safe-team
+```
+
+Change the branch to cctp-bridge
+
+```bash
+  git checkout cctp-bridge
 ```
 
 Go to the project directory
@@ -84,7 +85,6 @@ Start the server
   yarn dev
 ```
 
-
 ## Contributing
 
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
@@ -97,27 +97,25 @@ Don't forget to give the project a star! Thanks again!
    ```sh
    git checkout -b feature/AmazingFeature
    ```
-3. Commit your Changes 
-    ```sh
-    git commit -m 'Add some AmazingFeature'
-    ```
-4. Push to the Branch 
+3. Commit your Changes
+   ```sh
+   git commit -m 'Add some AmazingFeature'
+   ```
+4. Push to the Branch
    ```sh
     git push origin feature/AmazingFeature
-    ```
-6. Open a Pull Request
+   ```
+5. Open a Pull Request
 
 ## License
 
 Distributed under the MIT License. See `LICENSE.md` for more information.
-    
+
 ## Feedback & Contact
 
 If you have any feedback or contact, please reach out to us at info@codedecoders.io
 
-
 ## Authors
 
 - [@Maadhav](https://www.github.com/Maadhav)
-- [@kunal528](https://www.github.com/kunal528)
 - [@apoorvam-web3](https://www.github.com/apoorvam-web3)
