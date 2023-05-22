@@ -30,7 +30,7 @@ async function waitForTransaction(provider, txnHash) {
 const useAxelar = () => {
   const { safeAuth, switchChain } = useAuthKit();
 
-  async function execute({amount, reciever}) {
+  async function execute({ amount, receiver }) {
     await safeAuth.signIn();
     await switchChain("filecoin");
 
@@ -50,8 +50,7 @@ const useAxelar = () => {
     );
 
     // set the recipient address
-    //const reciever = await signer.getAddress();
-
+    //const receiver = await signer.getAddress();
 
     // STEP 1: Allow the FVM contract to spend USDC on your behalf
     const fvmUSDCWithSigner = fvmUSDC.connect(signer);
@@ -66,16 +65,14 @@ const useAxelar = () => {
     const fee = await api.estimateGasFee(
       CHAINS.TESTNET["FILECOIN"],
       CHAINS.TESTNET["ETHEREUM"],
-      "aUSDC",
-      undefined,
-      1.1
+      "aUSDC"
     );
     console.log("Fee: ", fee);
 
     const fvmContractWithSigner = fvmContract.connect(signer);
     const sendTx = await fvmContractWithSigner.send(
       ETH_CONTRACT_ADDRESS,
-      reciever,
+      receiver,
       amount,
       {
         value: fee,
@@ -112,7 +109,7 @@ const useAxelar = () => {
       "Bidging Completed: https://goerli.etherscan.io/tx/" +
         txStatus.executed.transactionHash
     );
-  };
+  }
 
   return { execute };
 };

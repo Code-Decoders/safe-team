@@ -16,5 +16,13 @@ export const config = {
       ticker: "AVAX",
       tickerName: "AVAX",
     },
+    filecoin: {
+      chainId: "0xc45",
+      rpcTarget: "https://rpc.ankr.com/filecoin_testnet",
+      displayName: "Filecoin - Hyperspace testnet",
+      blockExplorer: "https://hyperspace.filfox.info/en",
+      ticker: "tFIL",
+      tickerName: "tFIL",
+    },
   },
 };
