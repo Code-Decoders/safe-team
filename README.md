@@ -7,21 +7,19 @@
 > SafeTeam leverages the power of the Safe Core SDK to provide a solution for the problem of lost private keys and unsecure EOA wallets.
 > By using SafeTeam, you can secure your cryptocurrency funds and have peace of mind knowing that your private keys are safe and accessible.
 
-[Dora Hacks BUIDL Submission](https://dorahacks.io/buidl/4765)
-
 ## Inspiration
 
-> The idea of SuperFluid & real-time finance seemed fascinating to us, imagine being able to get paid continuously as you work on a project as a part of a grant, accelerator or hackathon, how cool is that!SafeTeam 2.0 is a customisable treasury management tool made possible with the help of Safe Wallet & Superfluid!
+> Safe{Team} isn't just another project. It's the culmination of our shared experiences, sleepless nights, and relentless pursuit of excellence. It's our vision of what treasury and asset management in the Web3 world should look like - innovative, intuitive, secure, and heck, even fun!
 
-> We used all the features of Superfluid - upgrade to and downgrade from Super Tokens, do Money Streaming(CFA) & Distributions(IDA) and making Batch Calls.
-
-> SafeTeam is a product that we wish existed in the market as both hackathon-winners and grant-receivers ourselves. Inspiration for this project came from our personal struggles, where we faced the issues of money won/earned during hackathons, grant programs, venture funding of any kind, was in the control of one of the members of the team and was given as a lump sum.
+> The crown jewel of our project, developed during this hackathon, is our implementation of crosschain transfers using Axelar GMP. With this feature, protocols across multiple blockchains can transfer funds to the winning teams on the chain of their choice - be it Filecoin, Ethereum, or any other. Safe{Team} takes care of all the bridging and transferring in the backend, allowing sponsors to send prizes seamlessly, and recipients to enjoy the convenience of receiving funds directly on their preferred blockchain.
  
 ## Features
 
 - Multi-signature wallet functionality for enhanced security.
 - User-friendly interface for easy use.
-- **Stream money evenly between all memebers using SuperFluid.**
+- **Cross-Chain Transfers using Axelar.**
+- **Decnetralized Database using Polybase**
+- Stream money evenly between all memebers using SuperFluid.
 - Gas-Less Transactions using Gelato Relayer via Relay Kit.
 - Sign In using socials using Web3Auth via Auth Kit.
 - Add funds using your Credit-Card using the Stripe SDK via On-Ramp kit.
@@ -33,7 +31,7 @@
 
 ## Demo
 
-Live Website (https://safeteam.netlify.app/)
+Live Website (https://safeteam-axelar.netlify.app/)
 
 Youtube Video Demo
 
@@ -43,7 +41,7 @@ Youtube Video Demo
 
 ## Tech Stack
 
-**Frontend:** NEXT.JS, ethers.js, Web3Auth
+**Frontend:** NEXT.JS, ethers.js, Web3Auth, Axelar SDK, Polybase Client SDK
 
 **Backend:** PolyBase, Safe Core SDK, Gelato, Base Testnet, Stripe SDK (onramp kit)
 ## Roadmap
@@ -52,10 +50,10 @@ Youtube Video Demo
 - [x]  Gasless Transactions
 - [x]  Add funds using Credit Card
 - [x]  Split Funds evenly on one click
-- [x]  **Stream Funds to all team members**
+- [x]  Stream Funds to all team members**
+- [x]  Multi Chain support using Axelar
 - [ ]  Option to stake funds
 - [ ]  Gasless Creation of Safes
-- [ ]  Multi Chain support
 - [ ]  Pitch the product to various Hackathon Platforms
 
 ## Run Locally
@@ -64,6 +62,12 @@ Clone the project
 
 ```bash
   git clone https://github.com/Code-Decoders/safe-team
+```
+
+Change the branch to axelar-bridge
+
+```bash
+  git checkout axelar-bridge
 ```
 
 Go to the project directory
@@ -119,5 +123,4 @@ If you have any feedback or contact, please reach out to us at info@codedecoders
 ## Authors
 
 - [@Maadhav](https://www.github.com/Maadhav)
-- [@kunal528](https://www.github.com/kunal528)
 - [@apoorvam-web3](https://www.github.com/apoorvam-web3)
