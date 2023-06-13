@@ -10,11 +10,13 @@
   },
   "dependencies": {
     "@axelar-network/axelarjs-sdk": "0.12.7-alpha.6",
+    "@celo/identity": "^4.1.0",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@gelatonetwork/gasless-wallet": "^0.0.3",
     "@gelatonetwork/relay-sdk": "^3.5.0",
     "@gnosis.pm/safe-react-components": "^1.2.0",
+    "@masa-finance/masa-sdk": "^3.2.2",
     "@material-ui/core": "^4.12.4",
     "@mui/material": "^5.11.14",
     "@polybase/client": "^0.3.38",

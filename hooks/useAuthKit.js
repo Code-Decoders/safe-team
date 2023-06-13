@@ -46,17 +46,26 @@ const useAuthKit = () => {
 
       const web3AuthModalPack = new Web3AuthModalPack(options, [], modalConfig);
 
-      const safeAuthKit = await SafeAuthKit.init(web3AuthModalPack, {
-        txServiceUrl: "https://safe-transaction-goerli.safe.global",
-      });
-
-      setSafeAuth(safeAuthKit);
-      setLoading(false);
+      try {
+        console.log("Starting SafeAuthKit init");
+        const safeAuthKit = await SafeAuthKit.init(web3AuthModalPack, {
+          txServiceUrl: "https://safe-transaction-goerli.safe.global",
+        });
+        console.log("Finished SafeAuthKit init", safeAuthKit);
+        setSafeAuth(safeAuthKit);
+      } catch (error) {
+        console.error("Error initializing SafeAuthKit", error);
+        alert("Error initializing SafeAuthKit");
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
 
   const switchChain = async (chain) => {
+    console.log("TESTING");
     setLoading(true);
+    console.log("TESTING1");
     const options = {
       clientId: process.env.NEXT_PUBLIC_WEB3AUTH_CLIENT_ID,
       web3AuthNetwork: "testnet",
@@ -71,13 +80,16 @@ const useAuthKit = () => {
     };
 
     const web3AuthModalPack = new Web3AuthModalPack(options, [], modalConfig);
+    console.log("TESTING2");
 
     const safeAuthKit = await SafeAuthKit.init(web3AuthModalPack, {
       txServiceUrl: "https://safe-transaction-goerli.safe.global",
     });
-
-    setSafeAuth(safeAuthKit);
+    console.log("TESTING3");
+    console.log(safeAuthKit);
+    setSafeAuth("Testing" + safeAuthKit);
     setLoading(false);
+    console.log("TESTING4");
 
     return safeAuthKit;
   };

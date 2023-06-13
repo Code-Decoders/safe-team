@@ -27,5 +27,8 @@ export const EthHashInfo = dynamic(() => import('@gnosis.pm/safe-react-component
 export const Select = dynamic(() => import('@gnosis.pm/safe-react-components').then(val => val.Select), {
     ssr: false,
 })
+export const Text = dynamic(() => import('@gnosis.pm/safe-react-components').then(val => val.Text), {
+    ssr: false,
+})
 
 
