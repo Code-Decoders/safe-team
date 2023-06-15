@@ -10,11 +10,13 @@ import {
 import useAuthKit from "./useAuthKit";
 
 import usdcAbi from "../abis/axelar/usdc.json";
-import fvmAbi from "../abis/axelar/fvm.json";
+import celoAbi from "../abis/axelar/celo.json";
+import { useContext } from "react";
+import { AuthContext } from "../contexts/AuthContext";
 //import ethAbi from "../abis/axelar/eth.json";
 
-const FVM_USDC_ADDRESS = "0x40721AE051B1D20c12038d7c408454B3Ca310Ea1";
-const FVM_CONTRACT_ADDRESS = "0xb7ff4e2dbe970f94ca08083db9cb073266e3c357";
+const CELO_USDC_ADDRESS = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1";
+const CELO_CONTRACT_ADDRESS = "0x24985149040856736f3a65baadbb87ea43aa96f8";
 //const ETH_USDC_ADDRESS = "0x220BdcCa5adA47b0c7d2723355161611411Bd834";
 const ETH_CONTRACT_ADDRESS = "0x0aC2C6391264Fb640266567E17F1A6fE4242e1D5";
 const api = new AxelarQueryAPI({ environment: Environment.TESTNET });
@@ -28,11 +30,12 @@ async function waitForTransaction(provider, txnHash) {
 }
 
 const useAxelar = () => {
-  const { safeAuth, switchChain } = useAuthKit();
+  const safeAuth = useContext(AuthContext);
+  const { switchChain } = useAuthKit();
 
   async function execute({ amount, receiver }) {
     await safeAuth.signIn();
-    await switchChain("filecoin");
+    await switchChain("alfajores");
 
     let provider = new ethers.providers.Web3Provider(
       await safeAuth.getProvider()
@@ -41,36 +44,36 @@ const useAxelar = () => {
     let signer = provider.getSigner();
 
     // initialize contracts using address and ABI
-    const fvmUSDC = new ethers.Contract(FVM_USDC_ADDRESS, usdcAbi, signer);
+    const celoUSDC = new ethers.Contract(CELO_USDC_ADDRESS, usdcAbi, signer);
 
-    const fvmContract = new ethers.Contract(
-      FVM_CONTRACT_ADDRESS,
-      fvmAbi,
+    const celoContract = new ethers.Contract(
+      CELO_CONTRACT_ADDRESS,
+      celoAbi,
       signer
     );
 
     // set the recipient address
     //const receiver = await signer.getAddress();
 
-    // STEP 1: Allow the FVM contract to spend USDC on your behalf
-    const fvmUSDCWithSigner = fvmUSDC.connect(signer);
-    const approveTx = await fvmUSDCWithSigner.approve(
-      FVM_CONTRACT_ADDRESS,
+    // STEP 1: Allow the CELO contract to spend USDC on your behalf
+    const celoUSDCWithSigner = celoUSDC.connect(signer);
+    const approveTx = await celoUSDCWithSigner.approve(
+      CELO_CONTRACT_ADDRESS,
       amount
     );
     const approveTxReceipt = await waitForTransaction(provider, approveTx.hash);
     console.log("ApproveTxReceipt: ", approveTxReceipt);
 
-    // STEP 2: Call the FVM contract to send USDC to the Axelar network
+    // STEP 2: Call the CELO contract to send USDC to the Axelar network
     const fee = await api.estimateGasFee(
-      CHAINS.TESTNET["FILECOIN"],
-      CHAINS.TESTNET["ETHEREUM"],
+      CHAINS.TESTNET.CELO,
+      CHAINS.TESTNET.ETHEREUM,
       "aUSDC"
     );
     console.log("Fee: ", fee);
 
-    const fvmContractWithSigner = fvmContract.connect(signer);
-    const sendTx = await fvmContractWithSigner.send(
+    const celoContractWithSigner = celoContract.connect(signer);
+    const sendTx = await celoContractWithSigner.send(
       ETH_CONTRACT_ADDRESS,
       receiver,
       amount,

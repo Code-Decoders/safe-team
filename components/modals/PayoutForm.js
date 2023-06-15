@@ -5,12 +5,12 @@ import filecoin from "../../assets/filecoin.png";
 import avalanche from "../../assets/avalanche.png";
 import polygon from "../../assets/polygon.png";
 import ethereum from "../../assets/ethereum.png";
+import celo from "../../assets/celo.png";
 import axelar from "../../assets/axelar.svg";
 import circle from "../../assets/circle-dark.svg";
 
-
 const PayoutForm = ({ handleCloseModal, onSubmit, teamName }) => {
-  const [network, setNetwork] = useState("Filecoin");
+  const [network, setNetwork] = useState("Celo");
   const [amount, setAmount] = useState("");
 
   const handleNetworkChange = (e) => {
@@ -48,12 +48,15 @@ const PayoutForm = ({ handleCloseModal, onSubmit, teamName }) => {
               label="Select Network"
               name="network-select"
               fullWidth
-              error={network != "Filecoin"}
-              helperText={
-                network != "Filecoin" && "Network not supported yet."
-              }
+              error={network != "Celo"}
+              helperText={network != "Celo" && "Network not supported yet."}
               value={network}
               items={[
+                {
+                  id: "Celo",
+                  label: "Celo",
+                  iconUrl: celo.src,
+                },
                 {
                   id: "Filecoin",
                   label: "Filecoin",
@@ -75,7 +78,7 @@ const PayoutForm = ({ handleCloseModal, onSubmit, teamName }) => {
                   iconUrl: ethereum.src,
                 },
               ]}
-              activeItemId={"Filecoin"}
+              activeItemId={"Celo"}
               onItemClick={(id) => {
                 handleNetworkChange(id);
               }}
@@ -106,7 +109,13 @@ const PayoutForm = ({ handleCloseModal, onSubmit, teamName }) => {
             </Button>
           </div>
           <div style={{ textAlign: "right", marginTop: "10px" }}>
-            <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
               <span>Powered By</span>
               <img src={axelar.src} width="100" height="auto" />
             </div>

@@ -1,16 +1,17 @@
 import styles from "../styles/Home.module.css";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button } from "../components/GnosisReact";
 import { CreateOrJoinTeam } from "../components/modals/CreateOrJoinTeam";
 import { CreateTeam } from "../components/modals/CreateTeam";
 import { JoinTeam } from "../components/modals/JoinTeam";
 import { ResultModal } from "../components/modals/ResultModal";
-import useAuthKit from "../hooks/useAuthKit";
 import { Polybase } from "@polybase/client";
 import { useSafeWallet } from "../hooks/useSafeWallet";
+import { AuthContext } from "../contexts/AuthContext";
 
 const db = new Polybase({
-  defaultNamespace: "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/Safe4",
+  defaultNamespace:
+    "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/Safe4",
 });
 
 export default function Home() {
@@ -28,7 +29,7 @@ export default function Home() {
 
   const [onJoin, setOnJoin] = useState(false);
 
-  const { safeAuth } = useAuthKit();
+  const safeAuth = useContext(AuthContext);
 
   const handleRegister = async () => {
     if (safeAuth) {

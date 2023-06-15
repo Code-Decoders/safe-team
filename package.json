@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@axelar-network/axelarjs-sdk": "0.12.7-alpha.6",
+    "@celo/contractkit": "^4.1.0",
     "@celo/identity": "^4.1.0",
+    "@celo/poprf": "^0.1.9",
     "@emotion/react": "^11.10.6",
     "@emotion/styled": "^11.10.6",
     "@gelatonetwork/gasless-wallet": "^0.0.3",
@@ -35,14 +37,28 @@
     "@web3auth/openlogin-adapter": "^5.1.0",
     "ethers": "^5.7.2",
     "graphql": "^16.6.0",
-    "next": "13.2.4",
+    "react-svg": "^16.1.10",
+    "styled-components": "^5.3.9",
+    "@celo/react-celo": "^4.2.1",
+    "@headlessui/react": "^1.7.4",
+    "@heroicons/react": "^2.0.13",
+    "@next/font": "^13.1.4",
+    "autoprefixer": "^10.4.13",
+    "bignumber.js": "^9.0.2",
+    "blind-threshold-bls": "https://github.com/celo-org/blind-threshold-bls-wasm#3d1013a",
+    "next": "13.1.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-svg": "^16.1.10",
-    "styled-components": "^5.3.9"
+    "react-hot-toast": "^2.2.0",
+    "react-modal": "^3.16.1"
   },
   "devDependencies": {
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4"
+  },
+  "browser": {
+    "@celo/poprf": false,
+    "source-map-support": false,
+    "net": false
   }
 }

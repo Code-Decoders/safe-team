@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Button, GenericModal, TextFieldInput } from "../GnosisReact";
-import useAuthKit from "../../hooks/useAuthKit";
 import { Polybase } from "@polybase/client";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const db = new Polybase({
   defaultNamespace: "pk/0x0a9f3867b6cd684ca2fbe94831396cbbfaf2a11d47f87ff8d49c6f5a58edf7e940cd0f4804294fa7b72b5a504711817f4a62681e6e9ff2be3f8a936bffdf312e/Safe4",
@@ -9,7 +9,7 @@ const db = new Polybase({
 
 export function JoinTeam({ open, onClose, onClick }) {
   const [code, setCode] = useState("");
-  const { safeAuth } = useAuthKit();
+  const safeAuth = useContext(AuthContext);
 
   async function joining() {
     console.log("Here");

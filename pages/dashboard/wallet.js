@@ -30,7 +30,6 @@ const Wallet = () => {
     approveTransaction,
     proposeTransaction,
     rejectTransaction,
-    loading,
     getEthSigner,
     executeTransactionForEOA,
   } = useTransaction();
@@ -214,7 +213,6 @@ const Wallet = () => {
   }, [sfLoaded, safeAddress]);
 
   async function getTransactions() {
-    if (loading) return;
     const signer = await getEthSigner();
     const address = await signer.getAddress();
     await init(signer);

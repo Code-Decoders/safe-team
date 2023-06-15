@@ -6,14 +6,14 @@ import {
 import Safe from "@safe-global/safe-core-sdk";
 import SafeSignature from "@safe-global/safe-core-sdk/dist/src/utils/signatures/SafeSignature";
 import EthersAdapter from "@safe-global/safe-ethers-lib";
-import useAuthKit from "./useAuthKit";
 import { OperationType } from "@safe-global/safe-core-sdk-types";
 import SafeServiceClient from "@safe-global/safe-service-client";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GelatoRelay } from "@gelatonetwork/relay-sdk";
+import { AuthContext } from "../contexts/AuthContext";
 
 const useTransaction = () => {
-  const { safeAuth, loading } = useAuthKit();
+  const safeAuth = useContext(AuthContext);
 
   const [safeAddress, setSafeAddress] = useState("");
 
@@ -233,7 +233,6 @@ const useTransaction = () => {
     approveTransaction,
     rejectTransaction,
     getEthSigner,
-    loading,
     executeTransactionForEOA,
   };
 };

@@ -31,26 +31,27 @@
 
 ## Demo
 
-Live Website (https://safeteam-axelar.netlify.app/)
+Live Website (https://safeteam-bwc.netlify.app/)
 
 Youtube Video Demo
 
-[![Youtube Video](https://img.youtube.com/vi/vDpOn0I4dE4/sddefault.jpg)](https://youtu.be/vDpOn0I4dE4)
+[![Youtube Video](https://img.youtube.com/vi/87M7Y3jMxfA/sddefault.jpg)](https://youtu.be/87M7Y3jMxfA)
 
 
 
 ## Tech Stack
 
-**Frontend:** NEXT.JS, ethers.js, Web3Auth, Axelar SDK, Polybase Client SDK
+**Frontend:** Masa SDK, NEXT.JS, ethers.js, Web3Auth, Axelar SDK, Polybase Client SDK
 
-**Backend:** PolyBase, Safe Core SDK, Gelato, Base Testnet, Stripe SDK (onramp kit)
+**Backend:** Social Connect Protocol, PolyBase, Safe Core SDK, Gelato, Celo Testnet, Stripe SDK
+
 ## Roadmap
 
 - [x]  Social Logins
 - [x]  Gasless Transactions
 - [x]  Add funds using Credit Card
 - [x]  Split Funds evenly on one click
-- [x]  Stream Funds to all team members**
+- [x]  **OnChain 2FA Authentication System**
 - [x]  Multi Chain support using Axelar
 - [ ]  Option to stake funds
 - [ ]  Gasless Creation of Safes
@@ -67,7 +68,7 @@ Clone the project
 Change the branch to axelar-bridge
 
 ```bash
-  git checkout axelar-bridge
+  git checkout celo
 ```
 
 Go to the project directory
@@ -123,4 +124,3 @@ If you have any feedback or contact, please reach out to us at info@codedecoders
 ## Authors
 
 - [@Maadhav](https://www.github.com/Maadhav)
-- [@apoorvam-web3](https://www.github.com/apoorvam-web3)

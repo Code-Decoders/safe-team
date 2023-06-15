@@ -24,5 +24,13 @@ export const config = {
       ticker: "tFIL",
       tickerName: "tFIL",
     },
+    alfajores: {
+      chainId: "0xaef3",
+      rpcTarget: "https://alfajores-forno.celo-testnet.org",
+      displayName: "Celo Alfajores Testnet",
+      blockExplorer: "https://explorer.celo.org/alfajores/",
+      ticker: "CELO",
+      tickerName: "CELO",
+    },
   },
 };

@@ -3,6 +3,7 @@ import styles from "../../styles/Dashboard.module.css";
 import Navbar from "../Navbar/Navbar";
 import useAuthKit from "../../hooks/useAuthKit";
 import { ethers } from "ethers";
+import { AuthContext } from "../../contexts/AuthContext";
 
 const DashboardLayout = ({ children }) => {
   const { safeAuth, loading } = useAuthKit();
@@ -31,7 +32,7 @@ const DashboardLayout = ({ children }) => {
   return (
     <div className={styles.app}>
       <Navbar eoa={eoa} signer={signer} />
-      {children}
+      <AuthContext.Provider value={safeAuth}>{children}</AuthContext.Provider>
     </div>
   );
 };
