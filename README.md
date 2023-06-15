@@ -17,8 +17,10 @@
 
 - Multi-signature wallet functionality for enhanced security.
 - User-friendly interface for easy use.
-- **Cross-Chain Transfers using Axelar.**
-- **Decnetralized Database using Polybase**
+- 2FA using SocialConnect
+- View your soulnames in the dashboard
+- Cross-Chain Transfers using Axelar.
+- Decnetralized Database using Polybase
 - Stream money evenly between all memebers using SuperFluid.
 - Gas-Less Transactions using Gelato Relayer via Relay Kit.
 - Sign In using socials using Web3Auth via Auth Kit.
