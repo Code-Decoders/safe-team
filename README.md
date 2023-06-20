@@ -33,7 +33,7 @@
 
 ## Demo
 
-Live Website (https://safeteam.netlify.app/)
+[Live Website](https://safeteam.netlify.app/)
 
 Youtube Video Demo
 
